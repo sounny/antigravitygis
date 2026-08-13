@@ -3,6 +3,18 @@
    Created by Sounny (sounny.com)
    ========================================================================== */
 
+window.copySnippet = function(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const origHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = origHTML;
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // Code Tabs in Code Inspector Box
   const tabBtns = document.querySelectorAll('.tab-btn');

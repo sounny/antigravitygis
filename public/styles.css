@@ -588,6 +588,111 @@ footer a {
   color: #38bdf8;
 }
 
+/* Modern 1-Line CLI Install Component */
+.hero-cli-container {
+  margin-top: 1.5rem;
+  max-width: 580px;
+}
+
+.hero-cli-box {
+  display: flex;
+  align-items: center;
+  background: #090d16;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  gap: 0.75rem;
+}
+
+.cli-prompt {
+  color: #38bdf8;
+  font-size: 1rem;
+}
+
+.cli-command {
+  flex-grow: 1;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  color: #34d399;
+  user-select: all;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.cli-copy-btn {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.cli-copy-btn:hover {
+  background: var(--esri-blue-primary);
+  border-color: var(--esri-blue-primary);
+  color: #ffffff;
+}
+
+.cli-copy-btn.copied {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+}
+
+.hero-cli-sub {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--esri-text-sub);
+}
+
+.platform-cli-box {
+  margin-top: auto;
+  background: #090d16;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+}
+
+.platform-cli-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.platform-cli-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.platform-cli-code code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #34d399;
+  user-select: all;
+  background: transparent;
+  padding: 0;
+  border: none;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; text-align: left; }
   .hero-image-wrapper { display: none; }
