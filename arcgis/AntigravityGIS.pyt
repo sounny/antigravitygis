@@ -12,12 +12,15 @@ import os
 import sys
 import arcpy
 
-# Ensure parent directory is in sys.path to locate agent_core
+# Ensure both current directory and parent directory are in sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
+import_error_msg = None
 try:
     from agent_core import (
         __version__,
@@ -29,7 +32,8 @@ try:
         run_arcpy_geoprocessing,
         check_and_prompt_antigravity_login,
     )
-except ImportError:
+except Exception as err:
+    import_error_msg = str(err)
     __version__ = "1.0.0"
     check_for_updates = None
     GISAntigravityAgent = None
@@ -147,8 +151,9 @@ class AntigravityAssistantTool(object):
                     arcpy.AddWarning(f"[AUTHENTICATION NOTICE] {auth_res.get('message')}")
 
         if GISAntigravityAgent is None:
+            details = f" ({import_error_msg})" if import_error_msg else ""
             arcpy.AddError(
-                "Error: Could not import 'agent_core' or 'google-antigravity'. "
+                f"Error: Could not import 'agent_core' or 'google-antigravity'{details}. "
                 "Please run Install-AntigravityGIS.bat (or Install-AntigravityGIS.ps1) to install dependencies."
             )
             return
