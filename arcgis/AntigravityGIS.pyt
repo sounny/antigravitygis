@@ -20,6 +20,14 @@ if current_dir not in sys.path:
 if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
 
+import importlib
+if "agent_core" in sys.modules:
+    try:
+        importlib.invalidate_caches()
+        importlib.reload(sys.modules["agent_core"])
+    except Exception:
+        pass
+
 import_error_msg = None
 try:
     from agent_core import (
