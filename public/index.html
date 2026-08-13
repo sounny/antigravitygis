@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AntigravityGIS by Sounny — Esri-Style Enterprise AI GIS Copilot</title>
+  <meta name="description" content="AntigravityGIS by Sounny is an enterprise AI GIS Copilot built on the Google Antigravity Python SDK for natural-language spatial analysis, dataset auditing, and ArcPy geoprocessing automation in ArcGIS Pro.">
+  <meta name="author" content="Moulay Anwar Sounny-Slitine, PhD">
+  <link rel="canonical" href="https://antigravitygis.sounny.com/">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://antigravitygis.sounny.com/">
+  <meta property="og:title" content="AntigravityGIS by Sounny — Enterprise AI GIS Copilot">
+  <meta property="og:description" content="AI Copilot for ArcGIS Pro & QGIS powered by Google Antigravity & Esri ArcPy. Natural language spatial analysis and geoprocessing automation.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Esri Official Calcite Light Mode Styles -->
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Schema.org Knowledge Graph -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://sounny.com/#sounny",
+        "name": "Moulay Anwar Sounny-Slitine, PhD",
+        "url": "https://sounny.com"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://antigravitygis.sounny.com/#website",
+        "url": "https://antigravitygis.sounny.com",
+        "name": "AntigravityGIS by Sounny",
+        "publisher": {
+          "@id": "https://sounny.com/#sounny"
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Esri Light Navigation Bar -->
+  <nav class="esri-navbar">
+    <div class="esri-nav-container">
+      <div class="esri-brand-group">
+        <a href="https://antigravitygis.sounny.com" style="display:flex; align-items:center; gap:0.85rem; color:inherit; text-decoration:none;">
+          <img src="images/icon.jpg" alt="AntigravityGIS Logo" class="nav-profile-img">
+          <span class="brand-text">AntigravityGIS</span>
+        </a>
+        <a href="https://sounny.com" class="brand-badge" target="_blank" rel="noopener">by Sounny</a>
+      </div>
+
+        <a href="#platforms" class="btn-primary"><i class="fa-solid fa-download"></i><span>Download</span></a>
+    </div>
+  </nav>
+
+  <!-- Hero Section with Interactive Mouse-Following Canvas -->
+  <header class="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-grid">
+      <div>
+        <h1>
+          The Enterprise AI Copilot<br>
+          for ArcGIS Pro & QGIS
+        </h1>
+
+        <p>
+          <strong>AntigravityGIS by Sounny</strong> brings natural-language spatial intelligence directly into your ArcGIS Pro Geoprocessing pane and QGIS interface. Inspect dataset schemas, audit spatial references, execute ArcPy/PyQGIS tools, and automate GIS workflows, running off your active <strong>Google Antigravity Account</strong>.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#platforms" class="btn-primary">
+            <i class="fa-solid fa-circle-down"></i>
+            <span>Choose Platform & Download</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Image (Esri Analyst & Spatial Graphics) -->
+      <div class="hero-image-wrapper">
+        <img src="images/hero_gis_analyst.jpg" alt="GIS Analyst smiling while working on laptop with 3D spatial maps" class="hero-image">
+      </div>
+    </div>
+  </header>
+
+  <!-- Platform Choice Section -->
+  <section id="platforms" class="features-section" style="background:#ffffff; border-bottom:1px solid var(--esri-border);">
+    <div class="features-container">
+      <div class="section-title">
+        <h2>Choose Your Desktop GIS Platform</h2>
+        <p>Only supported on Windows Devices.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- ArcGIS Pro Card -->
+        <div class="feature-card" style="border-top: 4px solid var(--esri-blue-primary);">
+          <div class="icon-box"><i class="fa-solid fa-map-location-dot"></i></div>
+          <h3>Esri ArcGIS Pro</h3>
+          <p>ArcPy Geoprocessing Pane AI Copilot extension. Automated Python environment setup & toolbox deployment for Windows.</p>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:0.75rem;">
+            <a href="https://raw.githubusercontent.com/sounny/antigravitygis/main/releases/Install-AntigravityGIS-Setup.zip" class="btn-primary" download style="justify-content:center;">
+              <i class="fa-solid fa-file-arrow-down"></i>
+              <span>Download for ArcGIS Pro</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- QGIS Card -->
+        <div class="feature-card" style="border-top: 4px solid #059669;">
+          <div class="icon-box" style="background:#e6f4ea; color:#059669; border-color:rgba(5,150,105,0.3);"><i class="fa-solid fa-layer-group"></i></div>
+          <h3>QGIS Desktop (PyQGIS)</h3>
+          <p>Native PyQGIS Plugin & Python SDK harness. Automatic dependency configuration and plugin folder deployment for Windows.</p>
+          <div style="margin-top:auto; display:flex; flex-direction:column; gap:0.75rem;">
+            <a href="https://raw.githubusercontent.com/sounny/antigravitygis/main/releases/Install-AntigravityGIS-QGIS-Setup.zip" class="btn-primary" download style="background:#059669; justify-content:center;">
+              <i class="fa-solid fa-file-arrow-down"></i>
+              <span>Download for QGIS</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Code Preview Section -->
+  <section id="code-preview" class="demo-section">
+    <div class="section-title">
+      <h2>ArcGIS Pro AI Copilot Integration</h2>
+      <p>Clean ArcPy agent execution directly in your Geoprocessing pane.</p>
+    </div>
+
+    <!-- Code Inspector Box -->
+    <div class="code-box">
+      <div class="code-header">
+        <div style="display:flex; align-items:center; gap:0.5rem; color:#8b949e; font-size:0.85rem; font-family:var(--font-mono);">
+          <i class="fa-solid fa-terminal" style="color:var(--esri-blue-primary);"></i>
+          <span>Geoprocessing Pane Execution Snippet</span>
+        </div>
+        <div class="code-tabs">
+          <button class="tab-btn active" data-tab="arcgis">ArcGIS Pro</button>
+          <button class="tab-btn" data-tab="installer">PowerShell</button>
+          <button class="tab-btn" data-tab="pyqgis">QGIS (Planned)</button>
+        </div>
+      </div>
+      <div class="code-body">
+        <pre id="code-content"><span class="code-comment"># ArcGIS Pro AI Copilot Execution in Geoprocessing Pane</span>
+<span class="code-keyword">import</span> arcpy
+<span class="code-keyword">from</span> agent_core <span class="code-keyword">import</span> GISAntigravityAgent
+
+<span class="code-comment"># Initialize AntigravityGIS Agent on your active Google Antigravity account</span>
+agent = <span class="code-func">GISAntigravityAgent</span>()
+
+<span class="code-comment"># Natural Language Instruction in ArcGIS Pro</span>
+prompt = <span class="code-str">"Inspect feature classes in target.gdb and buffer streams by 50 meters."</span>
+response = <span class="code-keyword">await</span> agent.<span class="code-func">execute_prompt</span>(prompt)
+arcpy.<span class="code-func">AddMessage</span>(response)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities Matrix -->
+  <section id="capabilities" class="features-section">
+    <div class="features-container">
+      <div class="section-title">
+        <h2>Enterprise GIS Capabilities</h2>
+        <p>Decoupled Python core architecture connecting Google Antigravity AI agents to Esri ArcPy and QGIS PyQGIS.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon-box"><i class="fa-solid fa-map-location-dot"></i></div>
+          <h3>Deep ArcPy Automation</h3>
+          <p>Inspect File Geodatabases, feature class field definitions, spatial reference coordinate systems, and bounding box extents automatically inside ArcGIS Pro.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-box"><i class="fa-solid fa-brain"></i></div>
+          <h3>Google Antigravity Engine</h3>
+          <p>Runs on your active Google Antigravity account (<code>agy auth login</code>) and Python SDK for real-time streaming reasoning and tool execution.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
+          <h3>1-Click Add-on Installer</h3>
+          <p>Automated PowerShell installer (<code>install_to_arcgis.ps1</code>) configures dependencies and deploys the toolbox directly to your ArcGIS Pro User Toolboxes folder.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-box"><i class="fa-solid fa-list-check"></i></div>
+          <h3>Spatial Data QA/QC & Audit</h3>
+          <p>Audits geometry types, feature record counts, missing spatial projections, and spatial attribute tables prior to map rendering or publishing.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-box"><i class="fa-solid fa-box-archive"></i></div>
+          <h3>Distributable Package Builder</h3>
+          <p>Includes <code>package_addon.py</code> to assemble the extension into a single distributable release zip file for enterprise teams and GitHub Releases.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="icon-box"><i class="fa-solid fa-layer-group"></i></div>
+          <h3>QGIS PyQGIS Roadmap</h3>
+          <p>Decoupled core harness lays the foundation for an upcoming PyQGIS plugin and dockable Qt panel in QGIS.</p>
+        </div>
+
+        <!-- Data Security Warning Box -->
+        <div class="alert-card">
+          <div class="alert-icon"><i class="fa-solid fa-shield-cat"></i></div>
+          <div>
+            <h4 style="color:var(--esri-yellow); margin-bottom: 0.4rem; font-size:1.1rem;">AI & Sensitive Data Security Safeguards</h4>
+            <p style="color: var(--esri-text-sub); font-size: 0.95rem;">
+              Spatial queries are processed by Google Antigravity. Be cautious when processing sensitive, confidential, or proprietary GIS datasets, and always verify AI-generated spatial outputs before production deployment.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quickstart Installation -->
+  <section id="installation" class="demo-section">
+    <div class="section-title">
+      <h2>Quickstart Installation for ArcGIS Pro</h2>
+      <p>Deploy the AntigravityGIS Add-on in 2 simple steps.</p>
+    </div>
+
+    <div class="steps-container">
+      <div class="step-card">
+        <div class="step-title">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>Step 1: Download Windows Installer Package</span>
+        </div>
+        <p style="color: var(--esri-text-sub);">Download the `.zip` from the links above, extract it, right-click <code>Install-AntigravityGIS.ps1</code>, and select <strong>Run with PowerShell</strong> to install!</p>
+        <code>Install-AntigravityGIS.ps1</code>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title">
+          <i class="fa-solid fa-folder-plus"></i>
+          <span>Step 2: Load Toolbox in ArcGIS Pro Catalog</span>
+        </div>
+        <ol style="color: var(--esri-text-sub); margin-left: 1.5rem; line-height: 1.8; margin-top:0.5rem;">
+          <li>Launch <strong>ArcGIS Pro</strong>.</li>
+          <li>Open <strong>Catalog Pane</strong> (<code>View</code> &rarr; <code>Catalog Pane</code>).</li>
+          <li>Right-click <strong>Toolboxes</strong> &rarr; <strong>Add Toolbox</strong>.</li>
+          <li>Select <code>%APPDATA%\Esri\ArcGISPro\ArcToolbox\MyToolboxes\AntigravityGIS\AntigravityGIS.pyt</code>.</li>
+          <li>Open <strong>Antigravity AI Assistant (by Sounny)</strong> under <strong>Sounny AI Tools</strong>!</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator Spotlight -->
+  <section id="creator" class="creator-section">
+    <div class="creator-card">
+      <div class="creator-photo-wrapper">
+        <img src="images/profile.png" alt="Sounny" class="creator-photo">
+      </div>
+
+      <div class="creator-info">
+        <h3>AntigravityGIS by Sounny</h3>
+        <div class="creator-subtitle">Designed & Created by Moulay Anwar Sounny-Slitine, PhD</div>
+        <p>
+          Designed by <strong>Moulay Anwar Sounny-Slitine, PhD</strong> to bridge modern agentic AI models with desktop GIS software. AntigravityGIS empowers spatial analysts, GIS engineers, and cartographers with natural language spatial copiloting inside Esri ArcGIS Pro and QGIS.
+        </p>
+        <div class="creator-actions">
+          <a href="https://sounny.com" class="btn-primary" target="_blank" rel="noopener">
+            <i class="fa-solid fa-globe"></i>
+            <span>Visit sounny.com</span>
+          </a>
+          <a href="https://github.com/sounny/antigravitygis" class="btn-outline" target="_blank">
+            <i class="fa-brands fa-github"></i>
+            <span>View on GitHub</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Esri Light Footer -->
+  <footer>
+    <div class="footer-container">
+      <div>
+        <strong style="color:#ffffff;">AntigravityGIS by Sounny</strong> — Enterprise AI GIS Copilot
+      </div>
+      <div>
+        &copy; 2026 Created by <a href="https://sounny.com" target="_blank" rel="noopener">Moulay Anwar Sounny-Slitine, PhD</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+
