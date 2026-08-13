@@ -1,0 +1,17 @@
+[general]
+name=AntigravityGIS
+qgisMinimumVersion=3.28
+description=AI Copilot for QGIS powered by Google Antigravity. Natural language spatial analysis, layer inspection, and PyQGIS workflow automation.
+version=0.1.0
+author=Moulay Anwar Sounny-Slitine, PhD
+email=antigravitygis@sounny.com
+about=AntigravityGIS by Moulay Anwar Sounny-Slitine, PhD brings natural-language spatial intelligence directly into QGIS. Inspect layer schemas, audit spatial references, and automate PyQGIS workflows using your active Google Antigravity Account.
+tracker=https://github.com/sounny/AntigravityGIS/issues
+repository=https://github.com/sounny/AntigravityGIS
+tags=ai, gis, automation, antigravity, spatial analysis, copilot
+homepage=https://antigravitygis.sounny.com
+category=Analysis
+icon=
+experimental=True
+deprecated=False
+changelog=0.1.0 - Initial MVP release with AI copilot panel for QGIS Desktop.
