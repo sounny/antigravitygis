@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "release_date": "2026-08-14",
+  "name": "AntigravityGIS Enterprise v1.0.0",
+  "notes": "Initial release of AntigravityGIS for ArcGIS Pro and QGIS Desktop with 1-line PowerShell installer.",
+  "update_command": "irm https://raw.githubusercontent.com/sounny/antigravitygis/main/install.ps1 | iex"
+}

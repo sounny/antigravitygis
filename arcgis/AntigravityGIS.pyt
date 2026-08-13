@@ -20,6 +20,8 @@ if parent_dir not in sys.path:
 
 try:
     from agent_core import (
+        __version__,
+        check_for_updates,
         GISAntigravityAgent,
         inspect_directory_spatial_data,
         inspect_arcgis_workspace,
@@ -28,6 +30,8 @@ try:
         check_and_prompt_antigravity_login,
     )
 except ImportError:
+    __version__ = "1.0.0"
+    check_for_updates = None
     GISAntigravityAgent = None
     check_and_prompt_antigravity_login = None
 
@@ -35,7 +39,7 @@ except ImportError:
 class Toolbox(object):
     def __init__(self):
         """Define the toolbox (the name of the .pyt file)."""
-        self.label = "AntigravityGIS by Sounny"
+        self.label = f"AntigravityGIS (v{__version__})"
         self.alias = "AntigravityGIS"
         self.tools = [AntigravityAssistantTool]
 
@@ -107,8 +111,19 @@ class AntigravityAssistantTool(object):
         auth_token = parameters[2].valueAsText if len(parameters) > 2 else None
 
         arcpy.AddMessage("=================================================")
-        arcpy.AddMessage("  AntigravityGIS by Sounny - ArcGIS Pro AI Copilot")
+        arcpy.AddMessage(f"  AntigravityGIS v{__version__} by Sounny — AI Copilot")
         arcpy.AddMessage("=================================================")
+
+        # Check for updates in background
+        if check_for_updates:
+            update_info = check_for_updates()
+            if update_info and update_info.get("update_available"):
+                arcpy.AddWarning(
+                    f"💡 Notice: New AntigravityGIS version v{update_info['latest_version']} is available! "
+                    f"(Current: v{update_info['current_version']})\n"
+                    f"To update, run in PowerShell: {update_info['update_command']}"
+                )
+
         arcpy.AddWarning(
             "⚠️ AI & DATA PRIVACY NOTICE: Prompts and queries are processed by Google Antigravity. "
             "Avoid sharing personally identifiable information (PII), confidential, or unreleased data. "

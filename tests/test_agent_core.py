@@ -31,18 +31,17 @@ class TestGISAntigravityCore(unittest.TestCase):
     def test_agent_initialization(self):
         """Test instantiation of GISAntigravityAgent."""
         runner = GISAntigravityAgent()
-        self.assertIsNotNone(runner.config)
-        self.assertEqual(len(runner.custom_tools), 0)
+        cfg = runner._build_config()
+        self.assertIsNotNone(cfg)
+        self.assertGreaterEqual(len(runner.custom_tools), 4)
 
         # Test tool registration
-        runner.register_tool(inspect_directory_spatial_data)
-        runner.register_tool(inspect_arcgis_workspace)
-        runner.register_tool(describe_arcgis_dataset)
-        runner.register_tool(run_arcpy_geoprocessing)
-        self.assertIn("inspect_directory_spatial_data", runner.custom_tools)
-        self.assertIn("inspect_arcgis_workspace", runner.custom_tools)
-        self.assertIn("describe_arcgis_dataset", runner.custom_tools)
-        self.assertIn("run_arcpy_geoprocessing", runner.custom_tools)
+        def custom_tool():
+            pass
+        runner.register_tool(custom_tool)
+        self.assertIn("custom_tool", runner.custom_tools)
+        cfg_updated = runner._build_config()
+        self.assertEqual(len(cfg_updated.tools), len(runner.custom_tools))
 
     def test_arcpy_tool_fallback_handling(self):
         """Verify ArcPy tools return structured error/fallback when ArcPy is absent."""

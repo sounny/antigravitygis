@@ -1,5 +1,7 @@
 """
 agent_core.py - Core Antigravity GIS Agent Engine
+Version: 1.0.0
+Created by Moulay Anwar Sounny-Slitine, PhD
 
 This module provides a platform-agnostic Antigravity Agent wrapper that can be embedded into:
   - ArcGIS Pro Python Toolboxes (.pyt)
@@ -8,9 +10,13 @@ This module provides a platform-agnostic Antigravity Agent wrapper that can be e
 """
 
 import asyncio
+import json
 import os
 import sys
-from typing import Callable, Optional, Dict, Any
+import urllib.request
+from typing import Callable, Optional, Dict, Any, List
+
+__version__ = "1.0.0"
 
 try:
     from google.antigravity import Agent, LocalAgentConfig, CapabilitiesConfig
@@ -18,6 +24,30 @@ except ImportError:
     Agent = None
     LocalAgentConfig = None
     CapabilitiesConfig = None
+
+
+def check_for_updates() -> Optional[Dict[str, Any]]:
+    """
+    Checks the GitHub repository for the latest released version of AntigravityGIS.
+    Returns update metadata if a newer version is available, or None.
+    """
+    try:
+        url = "https://raw.githubusercontent.com/sounny/antigravitygis/main/version.json"
+        req = urllib.request.Request(url, headers={"User-Agent": "AntigravityGIS-Updater"})
+        with urllib.request.urlopen(req, timeout=3) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            latest_ver = data.get("version", __version__)
+            if latest_ver > __version__:
+                return {
+                    "current_version": __version__,
+                    "latest_version": latest_ver,
+                    "update_available": True,
+                    "notes": data.get("notes", ""),
+                    "update_command": "irm https://raw.githubusercontent.com/sounny/antigravitygis/main/install.ps1 | iex",
+                }
+    except Exception:
+        pass
+    return None
 
 
 class GISAntigravityAgent:
@@ -28,25 +58,36 @@ class GISAntigravityAgent:
 
     def __init__(self, system_instructions: Optional[str] = None):
         if system_instructions is None:
-            system_instructions = (
+            self.system_instructions = (
                 "You are an expert AI GIS Assistant capable of performing spatial analysis, "
                 "inspecting datasets, writing geoprocessing scripts, and auditing spatial metadata "
                 "for both ArcGIS Pro (ArcPy) and QGIS (PyQGIS/GDAL)."
             )
-
-        if LocalAgentConfig and CapabilitiesConfig:
-            self.config = LocalAgentConfig(
-                system_instructions=system_instructions,
-                capabilities=CapabilitiesConfig(),
-            )
         else:
-            self.config = None
+            self.system_instructions = system_instructions
 
-        self.custom_tools: Dict[str, Callable] = {}
+        self.custom_tools: Dict[str, Callable] = {
+            "inspect_directory_spatial_data": inspect_directory_spatial_data,
+            "inspect_arcgis_workspace": inspect_arcgis_workspace,
+            "describe_arcgis_dataset": describe_arcgis_dataset,
+            "run_arcpy_geoprocessing": run_arcpy_geoprocessing,
+        }
 
     def register_tool(self, func: Callable):
         """Register a custom GIS function (ArcPy or PyQGIS wrapper) as an agent tool."""
         self.custom_tools[func.__name__] = func
+
+    def _build_config(self) -> Optional[Any]:
+        """Builds a fresh LocalAgentConfig equipped with all registered GIS tools."""
+        if LocalAgentConfig is None or CapabilitiesConfig is None:
+            return None
+
+        tools_list = list(self.custom_tools.values())
+        return LocalAgentConfig(
+            system_instructions=self.system_instructions,
+            capabilities=CapabilitiesConfig(),
+            tools=tools_list,
+        )
 
     async def execute_prompt(
         self, prompt: str, token_callback: Optional[Callable[[str], None]] = None
@@ -55,7 +96,8 @@ class GISAntigravityAgent:
         Executes a natural language GIS prompt against the Antigravity Agent.
         Optionally invokes a token_callback for real-time UI streaming in ArcGIS/QGIS.
         """
-        if Agent is None or self.config is None:
+        config = self._build_config()
+        if Agent is None or config is None:
             err_msg = (
                 "Google Antigravity SDK is not available. Please install 'google-antigravity' "
                 "and ensure you are logged into your Google Antigravity account (agy auth login)."
@@ -66,17 +108,14 @@ class GISAntigravityAgent:
 
         full_response = []
 
-        async with Agent(self.config) as agent:
-            # Attach custom registered GIS tools to the active agent session
-            for tool_func in self.custom_tools.values():
-                agent.register_tool(tool_func)
-
+        async with Agent(config) as agent:
             response = await agent.chat(prompt)
 
             async for token in response:
-                full_response.append(token)
+                token_str = str(token)
+                full_response.append(token_str)
                 if token_callback:
-                    token_callback(token)
+                    token_callback(token_str)
 
         return "".join(full_response)
 
@@ -104,7 +143,7 @@ def inspect_directory_spatial_data(directory_path: str) -> Dict[str, Any]:
             full_p = os.path.join(root, f)
             if ext == ".shp":
                 found_files["shapefiles"].append(full_p)
-            elif ext == ".geojson" or ext == ".json":
+            elif ext in [".geojson", ".json"]:
                 found_files["geojson"].append(full_p)
             elif ext in [".kml", ".kmz"]:
                 found_files["kml_kmz"].append(full_p)
@@ -206,34 +245,3 @@ def run_arcpy_geoprocessing(tool_name: str, **kwargs) -> Dict[str, Any]:
         return {"error": "ArcPy library is not available in this Python environment."}
     except Exception as err:
         return {"error": f"Geoprocessing tool '{tool_name}' failed: {str(err)}"}
-
-
-def check_and_prompt_antigravity_login() -> Dict[str, Any]:
-    """
-    Checks if active Antigravity credentials exist.
-    If missing, attempts to launch 1-click browser login or provides actionable instructions.
-    """
-    import subprocess
-    user_home = os.path.expanduser("~")
-    antigravity_dir = os.path.join(user_home, ".gemini", "antigravity")
-    
-    if os.environ.get("ANTIGRAVITY_API_KEY") or os.path.exists(antigravity_dir):
-        return {"status": "authenticated", "message": "Google Antigravity session active."}
-
-    # Attempt to invoke agy auth login
-    try:
-        proc = subprocess.run(["agy", "auth", "login"], capture_output=True, text=True, timeout=10)
-        if proc.returncode == 0:
-            return {"status": "authenticated", "message": "Successfully authenticated with Google Antigravity!"}
-    except Exception:
-        pass
-
-    return {
-        "status": "unauthenticated",
-        "message": (
-            "No active Google Antigravity session found. "
-            "Please run 'agy auth login' in your terminal or log into the Antigravity Desktop App."
-        ),
-    }
-
-
