@@ -56,7 +56,7 @@ class GISAntigravityAgent:
     Decoupled from specific desktop UI platforms so it can serve both ArcGIS Pro and QGIS.
     """
 
-    def __init__(self, system_instructions: Optional[str] = None):
+    def __init__(self, system_instructions: Optional[str] = None, api_key: Optional[str] = None):
         if system_instructions is None:
             self.system_instructions = (
                 "You are an expert AI GIS Assistant capable of performing spatial analysis, "
@@ -65,6 +65,8 @@ class GISAntigravityAgent:
             )
         else:
             self.system_instructions = system_instructions
+
+        self.api_key = api_key or os.environ.get("ANTIGRAVITY_API_KEY") or os.environ.get("GEMINI_API_KEY")
 
         self.custom_tools: Dict[str, Callable] = {
             "inspect_directory_spatial_data": inspect_directory_spatial_data,
@@ -83,10 +85,26 @@ class GISAntigravityAgent:
             return None
 
         tools_list = list(self.custom_tools.values())
+        
+        retry_cfg = None
+        try:
+            from google.antigravity import RetryConfig, ModelAPIRetryConfig
+            retry_cfg = RetryConfig(
+                api_retry=ModelAPIRetryConfig(
+                    max_retries=3,
+                    initial_sleep_duration_ms=2000,
+                    exponential_multiplier=2.0
+                )
+            )
+        except Exception:
+            pass
+
         return LocalAgentConfig(
             system_instructions=self.system_instructions,
             capabilities=CapabilitiesConfig(),
             tools=tools_list,
+            api_key=self.api_key,
+            retry_config=retry_cfg,
         )
 
     async def execute_prompt(
@@ -108,14 +126,34 @@ class GISAntigravityAgent:
 
         full_response = []
 
-        async with Agent(config) as agent:
-            response = await agent.chat(prompt)
+        try:
+            async with Agent(config) as agent:
+                response = await agent.chat(prompt)
 
-            async for token in response:
-                token_str = str(token)
-                full_response.append(token_str)
-                if token_callback:
-                    token_callback(token_str)
+                async for token in response:
+                    token_str = str(token)
+                    full_response.append(token_str)
+                    if token_callback:
+                        token_callback(token_str)
+        except Exception as err:
+            err_str = str(err)
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                clean_err = (
+                    "\n⚠️ [Rate Limit Reached (Free Tier: 5 requests/min)]\n"
+                    "Google Antigravity is processing requests. Please wait ~30 seconds before sending your next prompt, "
+                    "or enter a custom Gemini API Key in the tool's 3rd parameter."
+                )
+            elif "503" in err_str:
+                clean_err = (
+                    "\n⚠️ [Temporary Service Busy (HTTP 503)]\n"
+                    "The model is experiencing high demand. Please try again in a few seconds."
+                )
+            else:
+                clean_err = f"\nAntigravity Agent Notice: {err_str}"
+            
+            if token_callback:
+                token_callback(clean_err)
+            return clean_err
 
         return "".join(full_response)
 
