@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sounny.com/sitemap.xml

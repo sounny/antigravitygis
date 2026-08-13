@@ -1,0 +1,597 @@
+/* ==========================================================================
+   AntigravityGIS by Sounny — Esri Official Calcite Light Mode Styling
+   Design System: Esri.com (Light Mode, #ffffff background, Esri Blue #0079c1)
+   ========================================================================== */
+
+:root {
+  --esri-bg-light: #ffffff;
+  --esri-bg-alt: #f8f9fa;
+  --esri-bg-card: #ffffff;
+  --esri-border: #e5e7eb;
+  --esri-border-hover: #0079c1;
+  --esri-blue-primary: #0079c1;
+  --esri-blue-hover: #005e95;
+  --esri-blue-light: #e6f4ff;
+  --esri-blue-glow: rgba(0, 121, 193, 0.25);
+  --esri-navy-dark: #001c38;
+  --esri-text-main: #151515;
+  --esri-text-sub: #4b5563;
+  --esri-text-muted: #6b7280;
+  --esri-green: #059669;
+  --esri-yellow: #d97706;
+  --font-esri: 'Avenir Next', Avenir, 'Helvetica Neue', 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Consolas', 'Andale Mono', 'Space Grotesk', 'Fira Code', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-family: var(--font-esri);
+  background-color: var(--esri-bg-light);
+  color: var(--esri-text-main);
+  line-height: 1.6;
+}
+
+body {
+  overflow-x: hidden;
+  background: var(--esri-bg-light);
+}
+
+/* Typography & Links */
+h1, h2, h3, h4 {
+  color: var(--esri-text-main);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  color: var(--esri-blue-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--esri-blue-hover);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Esri Light Navigation Bar */
+.esri-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--esri-border);
+  padding: 0.65rem 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.esri-nav-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.esri-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-decoration: none;
+  color: var(--esri-text-main);
+}
+
+.nav-profile-img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  border: 1px solid var(--esri-border);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.brand-text {
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: #0f172a;
+}
+
+.brand-badge {
+  background: #eef6ff;
+  color: var(--esri-blue-primary);
+  border: 1px solid rgba(0, 121, 193, 0.2);
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+
+/* Esri Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--esri-blue-primary);
+  color: #ffffff !important;
+  padding: 0.75rem 1.6rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 4px 14px var(--esri-blue-glow);
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.btn-primary:hover {
+  background: var(--esri-blue-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 121, 193, 0.35);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #ffffff;
+  color: var(--esri-text-main);
+  padding: 0.75rem 1.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid var(--esri-border);
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.btn-outline:hover {
+  background: var(--esri-bg-alt);
+  border-color: var(--esri-blue-primary);
+  color: var(--esri-blue-primary);
+  transform: translateY(-1px);
+}
+
+/* Hero Section (Tight Proportions matching Screenshot) */
+.hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+  border-bottom: 1px solid var(--esri-border);
+  padding: 2.25rem 2rem 3rem 2rem;
+}
+
+#hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-grid {
+  position: relative;
+  z-index: 2;
+  max-width: 1320px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 3.4rem;
+  line-height: 1.12;
+  margin-bottom: 1.25rem;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.hero p {
+  font-size: 1.15rem;
+  color: #475569;
+  margin-bottom: 2rem;
+  line-height: 1.65;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+/* Hero Image Wrapper */
+.hero-image-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 580px;
+  border-radius: 16px;
+  box-shadow: 0 15px 35px rgba(0, 121, 193, 0.12);
+  transition: transform 0.3s ease;
+  background: #ffffff;
+}
+
+.hero-image:hover {
+  transform: translateY(-4px);
+}
+
+/* Code Inspector Box */
+.code-box {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.code-header {
+  background: #161b22;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid #30363d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.code-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  background: var(--esri-blue-primary);
+  color: #ffffff;
+}
+
+.code-body {
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: #e6edf3;
+  line-height: 1.75;
+  overflow-x: auto;
+}
+
+.code-body pre {
+  white-space: pre-wrap;
+}
+
+.code-keyword { color: #ff7b72; }
+.code-func { color: #79c0ff; }
+.code-str { color: #a5d6ff; }
+.code-comment { color: #8b949e; font-style: italic; }
+
+/* Interactive Demo Simulator */
+.demo-section {
+  max-width: 1320px;
+  margin: 5rem auto;
+  padding: 0 2rem;
+}
+
+.demo-card {
+  background: #ffffff;
+  border: 1px solid var(--esri-border);
+  border-radius: 8px;
+  padding: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.demo-prompts-title {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+  color: var(--esri-blue-primary);
+  font-weight: 700;
+}
+
+.prompt-pill {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--esri-bg-alt);
+  border: 1px solid var(--esri-border);
+  color: var(--esri-text-main);
+  padding: 0.85rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.92rem;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.prompt-pill:hover, .prompt-pill.active {
+  background: var(--esri-blue-light);
+  border-color: var(--esri-blue-primary);
+  color: var(--esri-blue-primary);
+  transform: translateX(4px);
+}
+
+.demo-output-box {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #34d399;
+  line-height: 1.7;
+  overflow-y: auto;
+  max-height: 280px;
+}
+
+/* Features Section */
+.features-section {
+  background: var(--esri-bg-alt);
+  border-top: 1px solid var(--esri-border);
+  border-bottom: 1px solid var(--esri-border);
+  padding: 6rem 2rem;
+}
+
+.features-container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.section-title {
+  text-align: center;
+  max-width: 750px;
+  margin: 0 auto 4rem auto;
+}
+
+.section-title h2 {
+  font-size: 2.4rem;
+  margin-bottom: 0.75rem;
+  color: #0b192c;
+}
+
+.section-title p {
+  color: var(--esri-text-sub);
+  font-size: 1.1rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2rem;
+}
+
+.feature-card {
+  background: #ffffff;
+  border: 1px solid var(--esri-border);
+  border-radius: 8px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.feature-card:hover {
+  border-color: var(--esri-blue-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 121, 193, 0.12);
+}
+
+.icon-box {
+  width: 52px;
+  height: 52px;
+  background: var(--esri-blue-light);
+  border: 1px solid rgba(0, 121, 193, 0.2);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--esri-blue-primary);
+  font-size: 1.4rem;
+}
+
+.feature-card h3 {
+  font-size: 1.3rem;
+  color: var(--esri-text-main);
+}
+
+.feature-card p {
+  color: var(--esri-text-sub);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+/* Alert Banner */
+.alert-card {
+  grid-column: 1 / -1;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.alert-icon {
+  font-size: 2.4rem;
+  color: var(--esri-yellow);
+}
+
+/* Steps */
+.steps-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.step-card {
+  background: #ffffff;
+  border: 1px solid var(--esri-border);
+  border-left: 4px solid var(--esri-blue-primary);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.step-title {
+  font-size: 1.25rem;
+  color: var(--esri-blue-primary);
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 700;
+}
+
+.step-card code {
+  background: #0d1117;
+  color: #34d399;
+  padding: 0.85rem 1.2rem;
+  border-radius: 6px;
+  display: block;
+  font-family: var(--font-mono);
+  margin-top: 0.85rem;
+}
+
+/* Space Applications Creator Spotlight */
+.creator-section {
+  max-width: 1320px;
+  margin: 6rem auto;
+  padding: 0 2rem;
+}
+
+.creator-card {
+  background: #ffffff;
+  border: 1px solid var(--esri-border);
+  border-top: 4px solid var(--esri-blue-primary);
+  border-radius: 8px;
+  padding: 3.5rem;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 3.5rem;
+  align-items: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+}
+
+.creator-photo-wrapper {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.creator-photo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 50% 15%;
+  border: 4px solid var(--esri-blue-primary);
+  box-shadow: 0 6px 20px rgba(0, 121, 193, 0.2);
+}
+
+.space-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: var(--esri-blue-primary);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.creator-info h3 {
+  font-size: 2.3rem;
+  margin-bottom: 0.4rem;
+  color: var(--esri-text-main);
+}
+
+.creator-subtitle {
+  color: var(--esri-blue-primary);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+}
+
+.creator-info p {
+  color: var(--esri-text-sub);
+  margin-bottom: 1.75rem;
+  font-size: 1.08rem;
+  line-height: 1.75;
+}
+
+.creator-actions {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+/* Footer */
+footer {
+  background: #0f172a;
+  padding: 4rem 2rem 3rem 2rem;
+  color: #94a3b8;
+}
+
+.footer-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+footer a {
+  color: #38bdf8;
+}
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; text-align: left; }
+  .hero-image-wrapper { display: none; }
+  .creator-card { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  .demo-card { grid-template-columns: 1fr; }
+  .esri-nav-links { display: none; }
+}
