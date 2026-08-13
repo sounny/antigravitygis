@@ -247,16 +247,41 @@ arcpy.<span class="code-func">AddMessage</span>(response)</pre>
   <section id="installation" class="demo-section">
     <div class="section-title">
       <h2>Quickstart Installation Guide</h2>
-      <p>Deploy AntigravityGIS on Windows in 2 simple steps for either desktop platform.</p>
+      <p>Deploy AntigravityGIS on Windows in seconds via terminal command or ZIP package.</p>
+    </div>
+
+    <!-- 1-Line Terminal Install Section -->
+    <div style="background: #090d16; border: 1px solid #1e293b; border-radius: 8px; padding: 1.5rem; margin-bottom: 2.5rem; color: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,0.15);">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom: 0.75rem; flex-wrap:wrap; gap:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+          <i class="fa-solid fa-terminal" style="color: #38bdf8; font-size:1.2rem;"></i>
+          <strong style="font-size:1.1rem; color:#ffffff;">1-Line Terminal Install (No Unblocking Needed)</strong>
+        </div>
+        <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.8rem; padding: 3px 8px; border-radius: 4px; font-family: var(--font-mono);">Recommended</span>
+      </div>
+      <p style="color: #94a3b8; font-size: 0.92rem; margin-bottom: 1rem;">
+        Open <strong>Windows PowerShell</strong> and paste the command below. It installs AntigravityGIS directly in memory with zero Smart App Control or security blocks:
+      </p>
+      <div style="display:flex; align-items:center; background:#020617; border:1px solid #334155; border-radius:6px; padding:0.75rem 1rem; gap:1rem;">
+        <code style="color:#34d399; font-size:0.95rem; flex-grow:1; user-select:all; background:transparent; border:none; padding:0;">irm https://raw.githubusercontent.com/sounny/antigravitygis/main/install.ps1 | iex</code>
+      </div>
+      <div style="margin-top:0.75rem; display:flex; gap:1.5rem; font-size:0.85rem; color:#94a3b8; flex-wrap:wrap;">
+        <span><strong>ArcGIS Pro only:</strong> <code style="color:#38bdf8;">irm https://raw.githubusercontent.com/sounny/antigravitygis/main/install-arcgis.ps1 | iex</code></span>
+        <span><strong>QGIS only:</strong> <code style="color:#38bdf8;">irm https://raw.githubusercontent.com/sounny/antigravitygis/main/install-qgis.ps1 | iex</code></span>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-bottom:1.5rem;">
+      <h3 style="font-size:1.3rem;">Or Download Manual Setup Packages</h3>
     </div>
 
     <!-- Windows SmartScreen / Unblock Alert Box -->
     <div class="alert-card" style="background:#f0f9ff; border:1px solid #bae6fd; margin-bottom:2rem;">
       <div class="alert-icon" style="color:var(--esri-blue-primary);"><i class="fa-solid fa-shield-halved"></i></div>
       <div>
-        <h4 style="color:var(--esri-blue-primary); margin-bottom:0.3rem; font-size:1.05rem;">Windows Security Tip (Smart App Control / SmartScreen)</h4>
+        <h4 style="color:var(--esri-blue-primary); margin-bottom:0.3rem; font-size:1.05rem;">Windows Security Tip (for Browser ZIP Downloads)</h4>
         <p style="color:var(--esri-text-main); font-size:0.92rem; line-height:1.5;">
-          When downloading <code>.zip</code> packages from the web, Windows attaches an internet security flag. To unblock: <strong>Right-click the downloaded .zip file &rarr; Properties &rarr; check "Unblock" &rarr; click OK</strong> before extracting.
+          If downloading ZIPs through a web browser, Windows attaches an internet security flag. To unblock: <strong>Right-click the downloaded .zip file &rarr; Properties &rarr; check "Unblock" &rarr; click OK</strong> before extracting.
         </p>
       </div>
     </div>
