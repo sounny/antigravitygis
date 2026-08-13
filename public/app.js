@@ -21,22 +21,25 @@ prompt = <span class="code-str">"Inspect feature classes in target.gdb and buffe
 response = <span class="code-keyword">await</span> agent.<span class="code-func">execute_prompt</span>(prompt)
 arcpy.<span class="code-func">AddMessage</span>(response)`,
 
-    installer: `<span class="code-comment"># PowerShell Automated 1-Click Installer for ArcGIS Pro</span>
-Write-Host <span class="code-str">"Installing AntigravityGIS by Sounny..."</span> -ForegroundColor Cyan
+    installer: `<span class="code-comment"># PowerShell 1-Click Multi-Platform Installer</span>
+<span class="code-keyword">Write-Host</span> <span class="code-str">"Installing AntigravityGIS Copilot..."</span> -ForegroundColor Cyan
 
-<span class="code-comment"># 1. Run PowerShell Installer</span>
-.\install_to_arcgis.ps1
+<span class="code-comment"># Option A: Run PowerShell Installer (Bypasses execution policy)</span>
+powershell -ExecutionPolicy Bypass -File .\Install-AntigravityGIS.ps1
 
-<span class="code-comment"># 2. Open ArcGIS Pro -> Catalog Pane -> Toolboxes -> Add Toolbox</span>
-<span class="code-comment"># 3. Select: %APPDATA%\\Esri\\ArcGISPro\\ArcToolbox\\MyToolboxes\\AntigravityGIS.pyt</span>`,
+<span class="code-comment"># Option B: Double-click Install-AntigravityGIS.bat</span>`,
 
-    pyqgis: `<span class="code-comment"># QGIS PyQGIS Plugin Integration</span>
-<span class="code-keyword">from</span> qgis.core <span class="code-keyword">import</span> QgsProject
-<span class="code-keyword">from</span> qgis_agent_core <span class="code-keyword">import</span> inspect_qgis_active_project
+    pyqgis: `<span class="code-comment"># Native QGIS PyQGIS Dock Panel AI Copilot</span>
+<span class="code-keyword">from</span> qgis.core <span class="code-keyword">import</span> QgsProject, Qgis
+<span class="code-keyword">from</span> agent_core <span class="code-keyword">import</span> GISAntigravityAgent
 
-<span class="code-comment"># Inspect active QGIS map layers</span>
-summary = <span class="code-func">inspect_qgis_active_project</span>()
-<span class="code-func">print</span>(summary)`
+<span class="code-comment"># Initialize AI Copilot with QGIS Project inspection tools</span>
+agent = <span class="code-func">GISAntigravityAgent</span>()
+
+<span class="code-comment"># Execute natural-language PyQGIS analysis</span>
+prompt = <span class="code-str">"Audit CRS projections of all active layers and report missing spatial indexes."</span>
+result = <span class="code-keyword">await</span> agent.<span class="code-func">execute_prompt</span>(prompt)
+<span class="code-func">print</span>(result)`
   };
 
   if (tabBtns.length > 0 && codeContent) {

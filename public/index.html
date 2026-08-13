@@ -164,8 +164,8 @@
         </div>
         <div class="code-tabs">
           <button class="tab-btn active" data-tab="arcgis">ArcGIS Pro</button>
-          <button class="tab-btn" data-tab="installer">PowerShell</button>
-          <button class="tab-btn" data-tab="pyqgis">QGIS (Planned)</button>
+          <button class="tab-btn" data-tab="pyqgis">QGIS (PyQGIS)</button>
+          <button class="tab-btn" data-tab="installer">PowerShell / Batch</button>
         </div>
       </div>
       <div class="code-body">
@@ -207,8 +207,8 @@ arcpy.<span class="code-func">AddMessage</span>(response)</pre>
 
         <div class="feature-card">
           <div class="icon-box"><i class="fa-solid fa-bolt"></i></div>
-          <h3>1-Click Add-on Installer</h3>
-          <p>Automated PowerShell installer (<code>install_to_arcgis.ps1</code>) configures dependencies and deploys the toolbox directly to your ArcGIS Pro User Toolboxes folder.</p>
+          <h3>1-Click Multi-Platform Installer</h3>
+          <p>Automated PowerShell & Batch scripts configure dependencies and deploy toolboxes and plugins directly to ArcGIS Pro and QGIS profiles.</p>
         </div>
 
         <div class="feature-card">
@@ -220,13 +220,13 @@ arcpy.<span class="code-func">AddMessage</span>(response)</pre>
         <div class="feature-card">
           <div class="icon-box"><i class="fa-solid fa-box-archive"></i></div>
           <h3>Distributable Package Builder</h3>
-          <p>Includes <code>package_addon.py</code> to assemble the extension into a single distributable release zip file for enterprise teams and GitHub Releases.</p>
+          <p>Includes <code>package_addon.py</code> to assemble the extension into distributable release zip files with zero third-party compile dependencies.</p>
         </div>
 
         <div class="feature-card">
-          <div class="icon-box"><i class="fa-solid fa-layer-group"></i></div>
-          <h3>QGIS PyQGIS Roadmap</h3>
-          <p>Decoupled core harness lays the foundation for an upcoming PyQGIS plugin and dockable Qt panel in QGIS.</p>
+          <div class="icon-box" style="padding:6px; background:#eef7e8; border-color:rgba(88,150,50,0.3);"><svg role="img" viewBox="0 0 24 24" width="28" height="28" fill="#589632" xmlns="http://www.w3.org/2000/svg"><path d="M12.879 13.006v3.65l-3.004-3.048v-3.495h3.582l2.852 2.893h-3.43zm10.886 7.606V24h-3.654l-5.73-5.9v-3.55h3.354l6.03 6.062zm-10.828-1.448l3.372 3.371c-1.309.442-2.557.726-4.325.726C5.136 23.26 0 18.243 0 11.565 0 4.92 5.136 0 11.984 0 18.864 0 24 4.952 24 11.565c0 2.12-.523 4.076-1.457 5.759l-3.625-3.725a8.393 8.393 0 0 0 .24-2.005c0-4.291-3.148-7.527-7.1-7.527-3.954 0-7.248 3.236-7.248 7.527s3.33 7.6 7.247 7.6c.548 0 .661.017.88-.03z"/></svg></div>
+          <h3>Native PyQGIS Dock Panel</h3>
+          <p>Integrated Qt DockWidget Copilot in QGIS Desktop. Real-time active layer schema inspection, spatial CRS projection checks, and automated PyQGIS/GDAL geoprocessing.</p>
         </div>
 
         <!-- Data Security Warning Box -->
@@ -246,31 +246,60 @@ arcpy.<span class="code-func">AddMessage</span>(response)</pre>
   <!-- Quickstart Installation -->
   <section id="installation" class="demo-section">
     <div class="section-title">
-      <h2>Quickstart Installation for ArcGIS Pro</h2>
-      <p>Deploy the AntigravityGIS Add-on in 2 simple steps.</p>
+      <h2>Quickstart Installation Guide</h2>
+      <p>Deploy AntigravityGIS on Windows in 2 simple steps for either desktop platform.</p>
     </div>
 
-    <div class="steps-container">
+    <!-- ArcGIS Pro Setup -->
+    <h3 style="margin-bottom: 1rem; color: var(--esri-blue-primary);"><i class="fa-solid fa-layer-group"></i> For Esri ArcGIS Pro</h3>
+    <div class="steps-container" style="margin-bottom: 2.5rem;">
       <div class="step-card">
         <div class="step-title">
           <i class="fa-solid fa-file-arrow-down"></i>
-          <span>Step 1: Download Windows Installer Package</span>
+          <span>Step 1: Download & Run Installer</span>
         </div>
-        <p style="color: var(--esri-text-sub);">Download the `.zip` from the links above, extract it, right-click <code>Install-AntigravityGIS.ps1</code>, and select <strong>Run with PowerShell</strong> to install!</p>
-        <code>Install-AntigravityGIS.ps1</code>
+        <p style="color: var(--esri-text-sub);">Download the ArcGIS package, extract it, and double-click <code>Install-AntigravityGIS.bat</code> (or right-click <code>Install-AntigravityGIS.ps1</code> &rarr; <strong>Run with PowerShell</strong>).</p>
+        <code>Install-AntigravityGIS.bat</code>
       </div>
 
       <div class="step-card">
         <div class="step-title">
           <i class="fa-solid fa-folder-plus"></i>
-          <span>Step 2: Load Toolbox in ArcGIS Pro Catalog</span>
+          <span>Step 2: Load Toolbox in Catalog</span>
         </div>
         <ol style="color: var(--esri-text-sub); margin-left: 1.5rem; line-height: 1.8; margin-top:0.5rem;">
           <li>Launch <strong>ArcGIS Pro</strong>.</li>
           <li>Open <strong>Catalog Pane</strong> (<code>View</code> &rarr; <code>Catalog Pane</code>).</li>
           <li>Right-click <strong>Toolboxes</strong> &rarr; <strong>Add Toolbox</strong>.</li>
           <li>Select <code>%APPDATA%\Esri\ArcGISPro\ArcToolbox\MyToolboxes\AntigravityGIS\AntigravityGIS.pyt</code>.</li>
-          <li>Open <strong>Antigravity AI Assistant (by Sounny)</strong> under <strong>Sounny AI Tools</strong>!</li>
+          <li>Open <strong>Antigravity AI Assistant</strong> under <strong>Sounny AI Tools</strong>!</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- QGIS Setup -->
+    <h3 style="margin-bottom: 1rem; color: #589632;"><i class="fa-solid fa-cube"></i> For QGIS Desktop</h3>
+    <div class="steps-container">
+      <div class="step-card">
+        <div class="step-title">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>Step 1: Download & Run Installer</span>
+        </div>
+        <p style="color: var(--esri-text-sub);">Download the QGIS package, extract it, and double-click <code>Install-AntigravityGIS-QGIS.bat</code> (or right-click <code>Install-AntigravityGIS-QGIS.ps1</code> &rarr; <strong>Run with PowerShell</strong>).</p>
+        <code>Install-AntigravityGIS-QGIS.bat</code>
+      </div>
+
+      <div class="step-card">
+        <div class="step-title">
+          <i class="fa-solid fa-puzzle-piece"></i>
+          <span>Step 2: Enable Plugin in QGIS</span>
+        </div>
+        <ol style="color: var(--esri-text-sub); margin-left: 1.5rem; line-height: 1.8; margin-top:0.5rem;">
+          <li>Launch <strong>QGIS Desktop</strong>.</li>
+          <li>Go to <strong>Plugins</strong> &rarr; <strong>Manage and Install Plugins...</strong></li>
+          <li>Click the <strong>Installed</strong> tab.</li>
+          <li>Check the box next to <strong>AntigravityGIS</strong>.</li>
+          <li>Click the <strong>AntigravityGIS AI Copilot</strong> icon on the toolbar to open the dock panel!</li>
         </ol>
       </div>
     </div>
