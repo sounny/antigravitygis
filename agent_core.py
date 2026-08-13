@@ -245,3 +245,32 @@ def run_arcpy_geoprocessing(tool_name: str, **kwargs) -> Dict[str, Any]:
         return {"error": "ArcPy library is not available in this Python environment."}
     except Exception as err:
         return {"error": f"Geoprocessing tool '{tool_name}' failed: {str(err)}"}
+
+
+def check_and_prompt_antigravity_login() -> Dict[str, Any]:
+    """
+    Checks if active Antigravity credentials exist.
+    If missing, attempts to launch 1-click browser login or provides actionable instructions.
+    """
+    import subprocess
+    user_home = os.path.expanduser("~")
+    antigravity_dir = os.path.join(user_home, ".gemini", "antigravity")
+    
+    if os.environ.get("ANTIGRAVITY_API_KEY") or os.path.exists(antigravity_dir):
+        return {"status": "authenticated", "message": "Google Antigravity session active."}
+
+    # Attempt to invoke agy auth login
+    try:
+        proc = subprocess.run(["agy", "auth", "login"], capture_output=True, text=True, timeout=10)
+        if proc.returncode == 0:
+            return {"status": "authenticated", "message": "Successfully authenticated with Google Antigravity!"}
+    except Exception:
+        pass
+
+    return {
+        "status": "unauthenticated",
+        "message": (
+            "No active Google Antigravity session found. "
+            "Please run 'agy auth login' in your terminal or log into the Antigravity Desktop App."
+        ),
+    }
