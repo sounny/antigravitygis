@@ -485,7 +485,10 @@ class AntigravityArcGISProChatApp:
         found = False
         for p in candidate_paths:
             if p and os.path.exists(p):
-                os.system(f'start "" "{p}"')
+                try:
+                    os.startfile(p)
+                except Exception:
+                    pass
                 found = True
                 break
         if not found:
@@ -527,8 +530,14 @@ class AntigravityArcGISProChatApp:
                 return
             os.environ["GEMINI_API_KEY"] = val
             os.environ["ANTIGRAVITY_API_KEY"] = val
-            cmd = f"[System.Environment]::SetEnvironmentVariable('GEMINI_API_KEY', '{val}', 'User'); [System.Environment]::SetEnvironmentVariable('ANTIGRAVITY_API_KEY', '{val}', 'User')"
-            subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, creationflags=0x08000000)
+            try:
+                import winreg
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_SET_VALUE)
+                winreg.SetValueEx(key, "GEMINI_API_KEY", 0, winreg.REG_EXPAND_SZ, val)
+                winreg.SetValueEx(key, "ANTIGRAVITY_API_KEY", 0, winreg.REG_EXPAND_SZ, val)
+                winreg.CloseKey(key)
+            except Exception:
+                pass
             messagebox.showinfo("Saved", "Google AI Studio API Key saved permanently!")
             win.destroy()
 
