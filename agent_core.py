@@ -59,9 +59,12 @@ class GISAntigravityAgent:
     def __init__(self, system_instructions: Optional[str] = None, api_key: Optional[str] = None):
         if system_instructions is None:
             self.system_instructions = (
-                "You are an expert AI GIS Assistant capable of performing spatial analysis, "
-                "inspecting datasets, writing geoprocessing scripts, and auditing spatial metadata "
-                "for both ArcGIS Pro (ArcPy) and QGIS (PyQGIS/GDAL)."
+                "You are an expert AI GIS Assistant for ArcGIS Pro and QGIS.\n"
+                "You have access to live desktop GIS tools:\n"
+                "- When the user asks to add/make a point, pin a city, or map a coordinate, use 'create_point_feature' with the exact latitude, longitude, and name. This automatically creates the point feature class and adds it directly into their active ArcGIS Pro Map view!\n"
+                "- When the user asks to load or visualize a dataset, use 'add_data_to_active_map'.\n"
+                "- When the user asks to inspect a geodatabase or folder, use 'inspect_arcgis_workspace' or 'inspect_directory_spatial_data'.\n"
+                "- When the user asks for geoprocessing (Buffer, Clip, Dissolve, Merge), use 'run_arcpy_geoprocessing'."
             )
         else:
             self.system_instructions = system_instructions
@@ -73,6 +76,8 @@ class GISAntigravityAgent:
             "inspect_arcgis_workspace": inspect_arcgis_workspace,
             "describe_arcgis_dataset": describe_arcgis_dataset,
             "run_arcpy_geoprocessing": run_arcpy_geoprocessing,
+            "create_point_feature": create_point_feature,
+            "add_data_to_active_map": add_data_to_active_map,
         }
 
     def register_tool(self, func: Callable):
@@ -283,6 +288,69 @@ def run_arcpy_geoprocessing(tool_name: str, **kwargs) -> Dict[str, Any]:
         return {"error": "ArcPy library is not available in this Python environment."}
     except Exception as err:
         return {"error": f"Geoprocessing tool '{tool_name}' failed: {str(err)}"}
+
+
+def create_point_feature(latitude: float, longitude: float, name: str, output_name: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Creates a point feature at specified lat/long coordinates and automatically adds it directly to the active ArcGIS Pro map.
+    """
+    try:
+        import arcpy
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        target_gdb = aprx.defaultGeodatabase or arcpy.env.workspace or os.path.expanduser("~")
+        
+        safe_name = "".join(c if c.isalnum() else "_" for c in name).strip("_")
+        fc_name = arcpy.ValidateTableName(output_name or f"Point_{safe_name}", target_gdb)
+        out_fc = os.path.join(target_gdb, fc_name)
+
+        if arcpy.Exists(out_fc):
+            arcpy.management.Delete(out_fc)
+
+        sr = arcpy.SpatialReference(4326)  # WGS84
+        arcpy.management.CreateFeatureclass(target_gdb, fc_name, "POINT", spatial_reference=sr)
+        arcpy.management.AddField(out_fc, "Name", "TEXT", field_length=100)
+
+        with arcpy.da.InsertCursor(out_fc, ["SHAPE@XY", "Name"]) as cursor:
+            cursor.insertRow([(float(longitude), float(latitude)), str(name)])
+
+        added_to_map = False
+        active_map = aprx.activeMap or (aprx.listMaps()[0] if aprx.listMaps() else None)
+        if active_map:
+            active_map.addDataFromPath(out_fc)
+            added_to_map = True
+
+        return {
+            "status": "Success",
+            "feature_class": out_fc,
+            "latitude": latitude,
+            "longitude": longitude,
+            "name": name,
+            "added_to_map": added_to_map,
+            "message": f"Successfully created point for '{name}' and added it directly to your active ArcGIS Pro map view!",
+        }
+    except ImportError:
+        return {"error": "ArcPy library is not available in this Python environment."}
+    except Exception as err:
+        return {"error": f"Create point feature failed: {str(err)}"}
+
+
+def add_data_to_active_map(data_path: str, layer_name: Optional[str] = None) -> Dict[str, Any]:
+    """Adds an existing dataset, feature class, shapefile, or GeoJSON directly to the active ArcGIS Pro map."""
+    try:
+        import arcpy
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        active_map = aprx.activeMap or (aprx.listMaps()[0] if aprx.listMaps() else None)
+        if not active_map:
+            return {"error": "No active map found in the current ArcGIS Pro project."}
+
+        layer = active_map.addDataFromPath(data_path)
+        if layer_name and layer:
+            layer.name = layer_name
+        return {"status": "Success", "message": f"Added '{data_path}' directly to active map '{active_map.name}'."}
+    except ImportError:
+        return {"error": "ArcPy library is not available in this Python environment."}
+    except Exception as err:
+        return {"error": f"Failed to add data to active map: {str(err)}"}
 
 
 def check_and_prompt_antigravity_login() -> Dict[str, Any]:
