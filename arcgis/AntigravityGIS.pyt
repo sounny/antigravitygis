@@ -89,12 +89,18 @@ class AntigravityAssistantTool(object):
 
         # Parameter 1: Workspace Path
         param_workspace = arcpy.Parameter(
-            displayName="Target Workspace / Geodatabase Path (Optional)",
+            displayName="Target Workspace / Geodatabase Path (Defaults to Project GDB)",
             name="workspace_path",
             datatype="DEWorkspace",
             parameterType="Optional",
             direction="Input",
         )
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if aprx.defaultGeodatabase:
+                param_workspace.value = aprx.defaultGeodatabase
+        except Exception:
+            pass
 
         # Parameter 2: Google AI Studio API Key / Token (Optional)
         param_auth = arcpy.Parameter(
@@ -113,6 +119,13 @@ class AntigravityAssistantTool(object):
 
     def updateParameters(self, parameters):
         """Modify the values and properties of parameters before internal validation is performed."""
+        if len(parameters) > 1 and not parameters[1].altered and not parameters[1].value:
+            try:
+                aprx = arcpy.mp.ArcGISProject("CURRENT")
+                if aprx.defaultGeodatabase:
+                    parameters[1].value = aprx.defaultGeodatabase
+            except Exception:
+                pass
         return
 
     def updateMessages(self, parameters):
@@ -123,6 +136,12 @@ class AntigravityAssistantTool(object):
         """The source code of the tool."""
         prompt = parameters[0].valueAsText
         workspace_path = parameters[1].valueAsText
+        if not workspace_path:
+            try:
+                aprx = arcpy.mp.ArcGISProject("CURRENT")
+                workspace_path = aprx.defaultGeodatabase or arcpy.env.workspace
+            except Exception:
+                pass
         auth_token = parameters[2].valueAsText if len(parameters) > 2 else None
 
         arcpy.AddMessage("=================================================")
