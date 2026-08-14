@@ -336,7 +336,7 @@ class LaunchChatGuiTool(object):
             parameterType="Optional",
             direction="Input",
         )
-        param_info.value = "👉 Click the 'Run' button below to open your floating AI Chat Copilot window!"
+        param_info.value = "👉 Click the 'Run' button below to open the AI Chat Copilot window!"
         param_info.enabled = False
         return [param_info]
 
@@ -345,7 +345,7 @@ class LaunchChatGuiTool(object):
 
     def updateParameters(self, parameters):
         if len(parameters) > 0 and not parameters[0].value:
-            parameters[0].value = "👉 Click the 'Run' button below to open your floating AI Chat Copilot window!"
+            parameters[0].value = "👉 Click the 'Run' button below to open the AI Chat Copilot window!"
         return
 
     def updateMessages(self, parameters):
