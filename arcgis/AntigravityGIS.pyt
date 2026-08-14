@@ -267,11 +267,16 @@ class AntigravityAssistantTool(object):
                 if remaining:
                     arcpy.AddMessage(remaining)
 
+            is_notice = any(k in output_text for k in ["⚠️", "🔑", "Notice:", "Required]"])
             arcpy.AddMessage("\n=================================================")
-            arcpy.AddMessage("  Antigravity GIS Task Completed Successfully")
+            if is_notice:
+                arcpy.AddWarning("  Antigravity GIS Task Completed with Notice")
+            else:
+                arcpy.AddMessage("  Antigravity GIS Task Completed Successfully")
             arcpy.AddMessage("=================================================")
         except Exception as e:
-            arcpy.AddError(f"Antigravity Execution Failure: {str(e)}")
+            from agent_core import format_graceful_error
+            arcpy.AddWarning(format_graceful_error(e))
 
 
 class ConfigureApiKeyTool(object):

@@ -186,21 +186,7 @@ class GISAntigravityAgent:
                     if token_callback:
                         token_callback(token_str)
         except Exception as err:
-            err_str = str(err)
-            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                clean_err = (
-                    "\n⚠️ [Rate Limit Reached (Free Tier: 5 requests/min)]\n"
-                    "Google Antigravity is processing requests. Please wait ~30 seconds before sending your next prompt, "
-                    "or enter a custom Gemini API Key in the tool's 3rd parameter."
-                )
-            elif "503" in err_str:
-                clean_err = (
-                    "\n⚠️ [Temporary Service Busy (HTTP 503)]\n"
-                    "The model is experiencing high demand. Please try again in a few seconds."
-                )
-            else:
-                clean_err = f"\nAntigravity Agent Notice: {err_str}"
-            
+            clean_err = format_graceful_error(err)
             if token_callback:
                 token_callback(clean_err)
             return clean_err
@@ -223,6 +209,56 @@ class GISAntigravityAgent:
             pass
 
         return final_text
+
+
+def format_graceful_error(err: Exception) -> str:
+    """
+    Categorizes errors into human-friendly, actionable diagnostic guidance for GIS users.
+    """
+    err_str = str(err)
+    low_err = err_str.lower()
+
+    # 1. DNS / Network / Connection / Offline errors
+    if any(k in low_err for k in ["no such host", "dial tcp", "getaddrinfo", "connection refused", "timeout", "network unreachable", "failed to establish a new connection", "model unreachable"]):
+        return (
+            "\n⚠️ [Connectivity Notice: Google AI Service Unreachable]\n"
+            "Unable to reach the Google AI service (generativelanguage.googleapis.com).\n\n"
+            "Quick Suggestions:\n"
+            "• Check your internet connection or active VPN / proxy configuration.\n"
+            "• Ensure firewall rules allow outbound HTTPS traffic to Google APIs.\n"
+            "• If using a Google AI Studio API key, verify it via the 'Set Google AI Studio API Key' tool."
+        )
+
+    # 2. Authentication / API Key errors
+    if any(k in low_err for k in ["api_key_invalid", "unauthenticated", "401", "permission_denied", "api key not valid", "forbidden", "invalid argument"]):
+        return (
+            "\n🔑 [Google AI Studio API Key Required]\n"
+            "No valid API key or Antigravity session was detected.\n\n"
+            "How to configure in 30 seconds:\n"
+            "1. Get your free API key at: https://aistudio.google.com/apikey\n"
+            "2. In ArcGIS Pro, open 'Set Google AI Studio API Key (Permanent)' and save your key.\n"
+            "3. Re-run your spatial prompt!"
+        )
+
+    # 3. Rate Limit / Quota Exceeded (429)
+    if "429" in err_str or "resource_exhausted" in low_err or "quota" in low_err:
+        return (
+            "\n⏳ [Rate Limit / Quota Notice]\n"
+            "The free tier request rate limit was reached.\n\n"
+            "Suggestions:\n"
+            "• Please wait ~15–30 seconds before sending your next request.\n"
+            "• Use '⚡ Gemini 2.5 Flash' for optimal speed and throughput."
+        )
+
+    # 4. Service Unavailable / Overload (503 / 500)
+    if "503" in err_str or "500" in err_str or "overloaded" in low_err:
+        return (
+            "\n⚡ [Service Temporarily Busy (HTTP 503)]\n"
+            "The AI model is experiencing heavy demand right now. Please try again in a few seconds."
+        )
+
+    # 5. Default graceful message
+    return f"\nℹ️ [Antigravity AI Notice]: {err_str}"
 
 
 # Built-in generic spatial tools that work across environments
