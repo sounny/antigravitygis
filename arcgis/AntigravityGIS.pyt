@@ -351,13 +351,36 @@ class LaunchChatGuiTool(object):
             arcpy.AddError(f"Could not locate chat_gui.py in {current_folder}. Please run update.")
             return
 
-        # Find pythonw.exe to run completely silently without any black console window
-        python_exe = sys.executable
-        pythonw_exe = python_exe.lower().replace("python.exe", "pythonw.exe")
-        target_bin = pythonw_exe if os.path.exists(pythonw_exe) else python_exe
+        # Locate ArcGIS Pro Python executable accurately
+        python_candidates = [
+            os.path.join(sys.prefix, "pythonw.exe"),
+            os.path.join(sys.prefix, "python.exe"),
+            os.path.join(sys.exec_prefix, "pythonw.exe"),
+            os.path.join(sys.exec_prefix, "python.exe"),
+            r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe",
+            r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe",
+            os.path.expanduser(r"~\AppData\Local\Programs\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe"),
+            os.path.expanduser(r"~\AppData\Local\Programs\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe"),
+        ]
+        target_bin = None
+        for cand in python_candidates:
+            if os.path.exists(cand):
+                target_bin = cand
+                break
+        if not target_bin:
+            target_bin = sys.executable
 
         creation_flag = 0x08000000 if sys.platform == "win32" else 0
-        subprocess.Popen([target_bin, chat_script], creationflags=creation_flag)
+        script_dir = os.path.dirname(chat_script)
+        env = os.environ.copy()
+        env["PYTHONPATH"] = f"{script_dir};{env.get('PYTHONPATH', '')}"
 
-        arcpy.AddMessage("✅ Launched Antigravity AI Chat Copilot dialog in silent mode!")
+        subprocess.Popen(
+            [target_bin, chat_script],
+            cwd=script_dir,
+            env=env,
+            creationflags=creation_flag,
+        )
+
+        arcpy.AddMessage(f"✅ Launched Antigravity AI Copilot Chat Dialog in silent mode using {os.path.basename(target_bin)}!")
         arcpy.AddMessage("=================================================")
