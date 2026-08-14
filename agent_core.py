@@ -365,9 +365,16 @@ def check_and_prompt_antigravity_login() -> Dict[str, Any]:
     if os.environ.get("ANTIGRAVITY_API_KEY") or os.path.exists(antigravity_dir):
         return {"status": "authenticated", "message": "Google Antigravity session active."}
 
-    # Attempt to invoke agy auth login
+    # Attempt to invoke agy auth login silently without flashing console
     try:
-        proc = subprocess.run(["agy", "auth", "login"], capture_output=True, text=True, timeout=10)
+        creation_flag = 0x08000000 if sys.platform == "win32" else 0
+        proc = subprocess.run(
+            ["agy", "auth", "login"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+            creationflags=creation_flag,
+        )
         if proc.returncode == 0:
             return {"status": "authenticated", "message": "Successfully authenticated with Google Antigravity!"}
     except Exception:

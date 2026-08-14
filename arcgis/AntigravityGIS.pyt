@@ -53,7 +53,7 @@ class Toolbox(object):
         """Define the toolbox (the name of the .pyt file)."""
         self.label = f"AntigravityGIS (v{__version__})"
         self.alias = "AntigravityGIS"
-        self.tools = [AntigravityAssistantTool, ConfigureApiKeyTool]
+        self.tools = [LaunchChatGuiTool, AntigravityAssistantTool, ConfigureApiKeyTool]
 
 
 class AntigravityAssistantTool(object):
@@ -300,12 +300,64 @@ class ConfigureApiKeyTool(object):
             os.environ["GEMINI_API_KEY"] = api_key
             os.environ["ANTIGRAVITY_API_KEY"] = api_key
 
-            # Set permanently in Windows User Environment via powershell
+            # Set permanently in Windows User Environment via powershell silently
             cmd = f"[System.Environment]::SetEnvironmentVariable('GEMINI_API_KEY', '{api_key}', 'User'); [System.Environment]::SetEnvironmentVariable('ANTIGRAVITY_API_KEY', '{api_key}', 'User')"
-            subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, check=True)
+            creation_flag = 0x08000000 if sys.platform == "win32" else 0
+            subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, check=True, creationflags=creation_flag)
 
             arcpy.AddMessage("✅ SUCCESS: Your Google AI Studio API Key has been saved permanently to your Windows User Environment!")
             arcpy.AddMessage("All AntigravityGIS tools will now run with high-throughput quota automatically without requiring key re-entry.")
             arcpy.AddMessage("=================================================")
         except Exception as e:
             arcpy.AddError(f"Failed to set Windows environment variable: {str(e)}")
+
+
+class LaunchChatGuiTool(object):
+    def __init__(self):
+        """Define the tool (tool name and properties)."""
+        self.label = "Launch Antigravity AI Chat Dialog"
+        self.category = "Sounny AI Tools"
+        self.description = (
+            "Launches the modern, floating conversational AI Chat Copilot dialog for ArcGIS Pro.\n\n"
+            "Provides an interactive chat feed with speech bubbles, large multi-line prompt box, "
+            "quick action chips, and direct map canvas drawing."
+        )
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        return []
+
+    def isLicensable(self):
+        return True
+
+    def updateParameters(self, parameters):
+        return
+
+    def updateMessages(self, parameters):
+        return
+
+    def execute(self, parameters, messages):
+        arcpy.AddMessage("=================================================")
+        arcpy.AddMessage("  Launching Antigravity AI Copilot Chat Dialog")
+        arcpy.AddMessage("=================================================")
+
+        import subprocess
+        current_folder = os.path.dirname(os.path.abspath(__file__))
+        chat_script = os.path.join(current_folder, "chat_gui.py")
+        if not os.path.exists(chat_script):
+            chat_script = os.path.join(os.path.dirname(current_folder), "chat_gui.py")
+
+        if not os.path.exists(chat_script):
+            arcpy.AddError(f"Could not locate chat_gui.py in {current_folder}. Please run update.")
+            return
+
+        # Find pythonw.exe to run completely silently without any black console window
+        python_exe = sys.executable
+        pythonw_exe = python_exe.lower().replace("python.exe", "pythonw.exe")
+        target_bin = pythonw_exe if os.path.exists(pythonw_exe) else python_exe
+
+        creation_flag = 0x08000000 if sys.platform == "win32" else 0
+        subprocess.Popen([target_bin, chat_script], creationflags=creation_flag)
+
+        arcpy.AddMessage("✅ Launched Antigravity AI Chat Copilot dialog in silent mode!")
+        arcpy.AddMessage("=================================================")
