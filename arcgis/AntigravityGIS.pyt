@@ -53,7 +53,7 @@ class Toolbox(object):
         """Define the toolbox (the name of the .pyt file)."""
         self.label = f"AntigravityGIS (v{__version__})"
         self.alias = "AntigravityGIS"
-        self.tools = [AntigravityAssistantTool]
+        self.tools = [AntigravityAssistantTool, ConfigureApiKeyTool]
 
 
 class AntigravityAssistantTool(object):
@@ -62,9 +62,12 @@ class AntigravityAssistantTool(object):
         self.label = "Antigravity AI Assistant (by Sounny)"
         self.category = "Sounny AI Tools"
         self.description = (
-            "AntigravityGIS by Sounny - Interactive AI Copilot running on your Google Antigravity account "
-            "for natural language geoprocessing, dataset inspection, and ArcPy workflow automation inside ArcGIS Pro.\n\n"
-            "Created by Sounny (sounny.com).\n\n"
+            "AntigravityGIS by Moulay Anwar Sounny-Slitine, PhD\n\n"
+            "Enterprise AI Copilot running on Google Antigravity for spatial analysis, "
+            "geoprocessing automation, dataset inspection, and ArcPy workflows inside ArcGIS Pro.\n\n"
+            "🔑 GOOGLE AI STUDIO API KEY:\n"
+            "Get your free high-throughput API key at https://aistudio.google.com/apikey and paste it into Parameter 3 below "
+            "for instant 1,000+ requests/min quota.\n\n"
             "⚠️ AI DATA PRIVACY WARNING: You are interacting with an AI model. Be cautious when processing "
             "sensitive, confidential, or proprietary spatial datasets. Ensure compliance with your organization's "
             "data security and privacy policies."
@@ -93,9 +96,9 @@ class AntigravityAssistantTool(object):
             direction="Input",
         )
 
-        # Parameter 2: Antigravity Account Token / API Key (Optional)
+        # Parameter 2: Google AI Studio API Key / Token (Optional)
         param_auth = arcpy.Parameter(
-            displayName="Antigravity API Key / Token (Optional, defaults to active account session)",
+            displayName="Google AI Studio API Key (Optional — get at aistudio.google.com/apikey)",
             name="auth_token",
             datatype="GPStringHidden",
             parameterType="Optional",
@@ -228,3 +231,62 @@ class AntigravityAssistantTool(object):
             arcpy.AddMessage("=================================================")
         except Exception as e:
             arcpy.AddError(f"Antigravity Execution Failure: {str(e)}")
+
+
+class ConfigureApiKeyTool(object):
+    def __init__(self):
+        """Define the tool (tool name and properties)."""
+        self.label = "Set Google AI Studio API Key (Permanent)"
+        self.category = "Sounny AI Tools"
+        self.description = (
+            "Saves your Google AI Studio API key permanently to your Windows user environment variables.\n\n"
+            "Once saved, all AntigravityGIS tools will automatically use your key with 1,000+ requests/min quota without needing to type it in each time.\n\n"
+            "🔑 Get your free API key at: https://aistudio.google.com/apikey"
+        )
+        self.canRunInBackground = False
+
+    def getParameterInfo(self):
+        """Define parameter definitions for the Geoprocessing Tool dialog."""
+        param_key = arcpy.Parameter(
+            displayName="Google AI Studio API Key (Get at https://aistudio.google.com/apikey)",
+            name="api_key",
+            datatype="GPStringHidden",
+            parameterType="Required",
+            direction="Input",
+        )
+        return [param_key]
+
+    def isLicensable(self):
+        return True
+
+    def updateParameters(self, parameters):
+        return
+
+    def updateMessages(self, parameters):
+        return
+
+    def execute(self, parameters, messages):
+        api_key = parameters[0].valueAsText.strip() if parameters[0].valueAsText else ""
+        if not api_key:
+            arcpy.AddError("Error: API Key cannot be empty.")
+            return
+
+        arcpy.AddMessage("=================================================")
+        arcpy.AddMessage("  AntigravityGIS — Permanent API Key Configuration")
+        arcpy.AddMessage("=================================================")
+
+        import subprocess
+        try:
+            # Set in active process memory
+            os.environ["GEMINI_API_KEY"] = api_key
+            os.environ["ANTIGRAVITY_API_KEY"] = api_key
+
+            # Set permanently in Windows User Environment via powershell
+            cmd = f"[System.Environment]::SetEnvironmentVariable('GEMINI_API_KEY', '{api_key}', 'User'); [System.Environment]::SetEnvironmentVariable('ANTIGRAVITY_API_KEY', '{api_key}', 'User')"
+            subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, check=True)
+
+            arcpy.AddMessage("✅ SUCCESS: Your Google AI Studio API Key has been saved permanently to your Windows User Environment!")
+            arcpy.AddMessage("All AntigravityGIS tools will now run with high-throughput quota automatically without requiring key re-entry.")
+            arcpy.AddMessage("=================================================")
+        except Exception as e:
+            arcpy.AddError(f"Failed to set Windows environment variable: {str(e)}")
