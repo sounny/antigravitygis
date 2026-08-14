@@ -5,14 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AntigravityGIS by Sounny — Esri-Style Enterprise AI GIS Copilot</title>
   <meta name="description" content="AntigravityGIS by Sounny is an enterprise AI GIS Copilot built on the Google Antigravity Python SDK for natural-language spatial analysis, dataset auditing, and ArcPy geoprocessing automation in ArcGIS Pro.">
-  <meta name="author" content="Moulay Anwar Sounny-Slitine, PhD">
+  <meta name="author" content="Dr. Moulay Anwar Sounny-Slitine">
   <link rel="canonical" href="https://antigravitygis.sounny.com/">
+  <link rel="author" href="https://sounny.com/">
+
+  <!-- Verified Author Identity Links (IndieWeb / Knowledge Graph / rel="me") -->
+  <link rel="me" href="https://sounny.com/">
+  <link rel="me" href="https://www.wikidata.org/wiki/Q140745446">
+  <link rel="me" href="https://orcid.org/0000-0001-6669-9246">
+  <link rel="me" href="https://scholar.google.com/citations?user=7xUuX4QAAAAJ">
+  <link rel="me" href="https://github.com/sounny">
+  <link rel="me" href="https://www.linkedin.com/in/sounny/">
 
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://antigravitygis.sounny.com/">
   <meta property="og:title" content="AntigravityGIS by Sounny — Enterprise AI GIS Copilot">
   <meta property="og:description" content="AI Copilot for ArcGIS Pro & QGIS powered by Google Antigravity & Esri ArcPy. Natural language spatial analysis and geoprocessing automation.">
+  <meta property="og:image" content="https://antigravitygis.sounny.com/images/chat_dialog_screenshot.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AntigravityGIS by Sounny — Enterprise AI GIS Copilot">
+  <meta name="twitter:description" content="AI Copilot for ArcGIS Pro & QGIS powered by Google Antigravity & Esri ArcPy. Natural language spatial analysis and geoprocessing automation.">
+  <meta name="twitter:image" content="https://antigravitygis.sounny.com/images/chat_dialog_screenshot.png">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,17 +46,87 @@
     "@graph": [
       {
         "@type": "Person",
-        "@id": "https://sounny.com/#sounny",
-        "name": "Moulay Anwar Sounny-Slitine, PhD",
-        "url": "https://sounny.com"
+        "@id": "https://sounny.com/#person",
+        "name": "Dr. Moulay Anwar Sounny-Slitine",
+        "alternateName": ["Moulay Anwar Sounny-Slitine", "Sounny-Slitine", "Sounny"],
+        "url": "https://sounny.com/",
+        "identifier": "https://www.wikidata.org/wiki/Q140745446",
+        "sameAs": [
+          "https://sounny.com/",
+          "https://www.wikidata.org/wiki/Q140745446",
+          "https://orcid.org/0000-0001-6669-9246",
+          "https://scholar.google.com/citations?user=7xUuX4QAAAAJ",
+          "https://github.com/sounny",
+          "https://www.linkedin.com/in/sounny/"
+        ],
+        "jobTitle": "GIS Researcher & Software Engineer",
+        "knowsAbout": [
+          "Geographic Information Systems (GIS)",
+          "ArcGIS Pro",
+          "Esri ArcPy",
+          "QGIS",
+          "PyQGIS",
+          "Artificial Intelligence",
+          "Spatial Analysis",
+          "Geoprocessing"
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://antigravitygis.sounny.com/#software",
+        "name": "AntigravityGIS",
+        "applicationCategory": "GISApplication",
+        "operatingSystem": "Windows",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@id": "https://sounny.com/#person"
+        },
+        "creator": {
+          "@id": "https://sounny.com/#person"
+        },
+        "publisher": {
+          "@id": "https://sounny.com/#person"
+        },
+        "description": "Enterprise AI GIS Copilot built on the Google Antigravity Python SDK for natural-language spatial analysis, dataset auditing, and ArcPy geoprocessing automation in ArcGIS Pro and QGIS.",
+        "url": "https://antigravitygis.sounny.com/",
+        "downloadUrl": "https://github.com/sounny/antigravitygis"
       },
       {
         "@type": "WebSite",
         "@id": "https://antigravitygis.sounny.com/#website",
-        "url": "https://antigravitygis.sounny.com",
+        "url": "https://antigravitygis.sounny.com/",
         "name": "AntigravityGIS by Sounny",
+        "description": "The Enterprise AI Copilot for ArcGIS Pro & QGIS",
+        "author": {
+          "@id": "https://sounny.com/#person"
+        },
+        "creator": {
+          "@id": "https://sounny.com/#person"
+        },
         "publisher": {
-          "@id": "https://sounny.com/#sounny"
+          "@id": "https://sounny.com/#person"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://antigravitygis.sounny.com/#webpage",
+        "url": "https://antigravitygis.sounny.com/",
+        "name": "AntigravityGIS — Enterprise AI Copilot for ArcGIS Pro & QGIS",
+        "isPartOf": {
+          "@id": "https://antigravitygis.sounny.com/#website"
+        },
+        "about": {
+          "@id": "https://antigravitygis.sounny.com/#software"
+        },
+        "author": {
+          "@id": "https://sounny.com/#person"
+        },
+        "creator": {
+          "@id": "https://sounny.com/#person"
         }
       }
     ]
@@ -59,7 +143,7 @@
           <img src="images/icon.jpg" alt="AntigravityGIS Logo" class="nav-profile-img">
           <span class="brand-text">AntigravityGIS</span>
         </a>
-        <a href="https://sounny.com" class="brand-badge" target="_blank" rel="noopener">by Sounny</a>
+        <a href="https://sounny.com" class="brand-badge" target="_blank" rel="noopener noreferrer me">by Sounny</a>
       </div>
 
       <a href="#platforms" class="btn-primary"><i class="fa-solid fa-terminal"></i><span>Install</span></a>
@@ -406,21 +490,44 @@ arcpy.<span class="code-func">AddMessage</span>(response)</pre>
   <section id="creator" class="creator-section">
     <div class="creator-card">
       <div class="creator-photo-wrapper">
-        <img src="images/profile.png" alt="Sounny" class="creator-photo">
+        <img src="images/profile.png" alt="Dr. Moulay Anwar Sounny-Slitine" class="creator-photo">
       </div>
 
       <div class="creator-info">
         <h3>AntigravityGIS by Sounny</h3>
-        <div class="creator-subtitle">Designed & Created by Moulay Anwar Sounny-Slitine, PhD</div>
+        <div class="creator-subtitle">Designed & Created by Dr. Moulay Anwar Sounny-Slitine</div>
         <p>
-          Designed by <strong>Moulay Anwar Sounny-Slitine, PhD</strong> to bridge modern agentic AI models with desktop GIS software. AntigravityGIS empowers spatial analysts, GIS engineers, and cartographers with natural language spatial copiloting inside Esri ArcGIS Pro and QGIS.
+          Created by <strong>Dr. Moulay Anwar Sounny-Slitine</strong> to bridge agentic AI models with desktop GIS software. AntigravityGIS empowers spatial analysts, GIS engineers, and cartographers with natural language spatial copiloting inside Esri ArcGIS Pro and QGIS.
         </p>
+        
+        <!-- Verified Author Identity Links (Knowledge Graph Badges) -->
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin: 1rem 0 1.25rem 0;">
+          <a href="https://sounny.com/" class="btn-outline" style="padding:0.4rem 0.85rem; font-size:0.8rem;" target="_blank" rel="noopener noreferrer me">
+            <i class="fa-solid fa-globe" style="color:var(--esri-blue-primary);"></i> sounny.com
+          </a>
+          <a href="https://www.wikidata.org/wiki/Q140745446" class="btn-outline" style="padding:0.4rem 0.85rem; font-size:0.8rem;" target="_blank" rel="noopener noreferrer me" title="Wikidata: Q140745446">
+            <i class="fa-solid fa-barcode" style="color:#0079C1;"></i> Wikidata (Q140745446)
+          </a>
+          <a href="https://orcid.org/0000-0001-6669-9246" class="btn-outline" style="padding:0.4rem 0.85rem; font-size:0.8rem;" target="_blank" rel="noopener noreferrer me" title="ORCID: 0000-0001-6669-9246">
+            <i class="fa-brands fa-orcid" style="color:#a6ce39;"></i> ORCID
+          </a>
+          <a href="https://scholar.google.com/citations?user=7xUuX4QAAAAJ" class="btn-outline" style="padding:0.4rem 0.85rem; font-size:0.8rem;" target="_blank" rel="noopener noreferrer me" title="Google Scholar Profile">
+            <i class="fa-solid fa-graduation-cap" style="color:#4285f4;"></i> Google Scholar
+          </a>
+          <a href="https://www.linkedin.com/in/sounny/" class="btn-outline" style="padding:0.4rem 0.85rem; font-size:0.8rem;" target="_blank" rel="noopener noreferrer me" title="LinkedIn Profile">
+            <i class="fa-brands fa-linkedin" style="color:#0077b5;"></i> LinkedIn
+          </a>
+          <a href="https://github.com/sounny" class="btn-outline" style="padding:0.4rem 0.85rem; font-size:0.8rem;" target="_blank" rel="noopener noreferrer me" title="GitHub Profile">
+            <i class="fa-brands fa-github" style="color:#333;"></i> GitHub
+          </a>
+        </div>
+
         <div class="creator-actions">
-          <a href="https://sounny.com" class="btn-primary" target="_blank" rel="noopener">
+          <a href="https://sounny.com" class="btn-primary" target="_blank" rel="noopener noreferrer me">
             <i class="fa-solid fa-globe"></i>
             <span>Visit sounny.com</span>
           </a>
-          <a href="https://github.com/sounny/antigravitygis" class="btn-outline" target="_blank">
+          <a href="https://github.com/sounny/antigravitygis" class="btn-outline" target="_blank" rel="noopener noreferrer">
             <i class="fa-brands fa-github"></i>
             <span>View on GitHub</span>
           </a>
@@ -436,7 +543,7 @@ arcpy.<span class="code-func">AddMessage</span>(response)</pre>
         <strong style="color:#ffffff;">AntigravityGIS by Sounny</strong> — Enterprise AI GIS Copilot
       </div>
       <div>
-        &copy; 2026 Created by <a href="https://sounny.com" target="_blank" rel="noopener">Moulay Anwar Sounny-Slitine, PhD</a>
+        &copy; 2026 Created by <a href="https://sounny.com" target="_blank" rel="noopener noreferrer me">Dr. Moulay Anwar Sounny-Slitine</a>
       </div>
     </div>
   </footer>
