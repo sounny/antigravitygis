@@ -1,0 +1,31 @@
+{
+  "type": "FeatureCollection",
+  "name": "Austin_Texas",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "name": "Austin",
+        "state": "Texas",
+        "country": "United States",
+        "latitude": 30.2672,
+        "longitude": -97.7431,
+        "description": "Capital of Texas"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -97.7431,
+          30.2672
+        ]
+      }
+    }
+  ]
+}

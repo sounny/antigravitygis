@@ -1,0 +1,2 @@
+google-antigravity>=0.1.10
+protobuf>=7.35.1

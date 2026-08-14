@@ -318,19 +318,34 @@ class LaunchChatGuiTool(object):
         self.label = "Launch Antigravity AI Chat Dialog"
         self.category = "Sounny AI Tools"
         self.description = (
-            "Launches the modern, floating conversational AI Chat Copilot dialog for ArcGIS Pro.\n\n"
-            "Provides an interactive chat feed with speech bubbles, large multi-line prompt box, "
-            "quick action chips, and direct map canvas drawing."
+            "👉 HOW TO LAUNCH: Click the 'Run' button at the bottom of this Geoprocessing pane to open the interactive AI Chat Copilot window!\n\n"
+            "Features:\n"
+            "• Interactive conversational chat feed with speech bubbles\n"
+            "• Large multi-line prompt box with Shift+Enter support\n"
+            "• Quick spatial action chips (Pin Austin, Buffer layer, Inspect GDB)\n"
+            "• Direct map canvas drawing & automatic geodatabase history logging"
         )
         self.canRunInBackground = False
 
     def getParameterInfo(self):
-        return []
+        """Define parameter with clear instruction."""
+        param_info = arcpy.Parameter(
+            displayName="Launch Instructions",
+            name="instructions",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input",
+        )
+        param_info.value = "👉 Click the 'Run' button below to open your floating AI Chat Copilot window!"
+        param_info.enabled = False
+        return [param_info]
 
     def isLicensable(self):
         return True
 
     def updateParameters(self, parameters):
+        if len(parameters) > 0 and not parameters[0].value:
+            parameters[0].value = "👉 Click the 'Run' button below to open your floating AI Chat Copilot window!"
         return
 
     def updateMessages(self, parameters):
