@@ -294,16 +294,18 @@ class ConfigureApiKeyTool(object):
         arcpy.AddMessage("  AntigravityGIS — Permanent API Key Configuration")
         arcpy.AddMessage("=================================================")
 
-        import subprocess
         try:
             # Set in active process memory
             os.environ["GEMINI_API_KEY"] = api_key
             os.environ["ANTIGRAVITY_API_KEY"] = api_key
 
-            # Set permanently in Windows User Environment via powershell silently
-            cmd = f"[System.Environment]::SetEnvironmentVariable('GEMINI_API_KEY', '{api_key}', 'User'); [System.Environment]::SetEnvironmentVariable('ANTIGRAVITY_API_KEY', '{api_key}', 'User')"
-            creation_flag = 0x08000000 if sys.platform == "win32" else 0
-            subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True, text=True, check=True, creationflags=creation_flag)
+            # Set permanently in Windows User Environment via native Windows Registry (zero console windows)
+            if sys.platform == "win32":
+                import winreg
+                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_SET_VALUE)
+                winreg.SetValueEx(reg_key, "GEMINI_API_KEY", 0, winreg.REG_EXPAND_SZ, api_key)
+                winreg.SetValueEx(reg_key, "ANTIGRAVITY_API_KEY", 0, winreg.REG_EXPAND_SZ, api_key)
+                winreg.CloseKey(reg_key)
 
             arcpy.AddMessage("✅ SUCCESS: Your Google AI Studio API Key has been saved permanently to your Windows User Environment!")
             arcpy.AddMessage("All AntigravityGIS tools will now run with high-throughput quota automatically without requiring key re-entry.")
@@ -356,7 +358,6 @@ class LaunchChatGuiTool(object):
         arcpy.AddMessage("  Launching Antigravity AI Copilot Chat Dialog")
         arcpy.AddMessage("=================================================")
 
-        import threading
         import subprocess
 
         current_folder = os.path.dirname(os.path.abspath(__file__))
@@ -368,42 +369,21 @@ class LaunchChatGuiTool(object):
             arcpy.AddError(f"Could not locate chat_gui.py in {current_folder}. Please run update.")
             return
 
-        # Attempt 1: Direct in-process launch on a daemon thread (100% silent, zero console windows)
-        try:
-            if current_folder not in sys.path:
-                sys.path.insert(0, current_folder)
-            parent_dir = os.path.dirname(current_folder)
-            if parent_dir not in sys.path:
-                sys.path.insert(0, parent_dir)
-
-            import importlib
-            import chat_gui
-            importlib.reload(chat_gui)
-
-            gui_thread = threading.Thread(target=chat_gui.main, daemon=True)
-            gui_thread.start()
-            arcpy.AddMessage("✅ Launched Antigravity AI Copilot Chat Dialog (In-Process Silent Mode)!")
-            arcpy.AddMessage("=================================================")
-            return
-        except Exception as thread_err:
-            arcpy.AddMessage(f"In-process launch fallback ({str(thread_err)}), starting silent background process...")
-
-        # Attempt 2: Isolated silent subprocess with hidden window flags
-        python_candidates = [
-            os.path.join(sys.prefix, "pythonw.exe"),
-            os.path.join(sys.prefix, "python.exe"),
-            os.path.join(sys.exec_prefix, "pythonw.exe"),
-            os.path.join(sys.exec_prefix, "python.exe"),
-            r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe",
+        # Find windowless Python executable (pythonw.exe) strictly
+        pythonw_candidates = [
             os.path.expanduser(r"~\AppData\Local\Programs\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe"),
+            r"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\pythonw.exe",
+            os.path.join(sys.prefix, "pythonw.exe"),
+            os.path.join(sys.exec_prefix, "pythonw.exe"),
+            os.path.join(os.path.dirname(sys.executable), "pythonw.exe"),
         ]
         target_bin = None
-        for cand in python_candidates:
+        for cand in pythonw_candidates:
             if os.path.exists(cand):
                 target_bin = cand
                 break
         if not target_bin:
-            target_bin = sys.executable
+            target_bin = sys.executable.replace("python.exe", "pythonw.exe")
 
         script_dir = os.path.dirname(chat_script)
         env = os.environ.copy()
@@ -415,7 +395,8 @@ class LaunchChatGuiTool(object):
             si = subprocess.STARTUPINFO()
             si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = 0  # SW_HIDE
-            creation_flags = 0x08000000 | 0x00000200  # CREATE_NO_WINDOW | CREATE_NEW_PROCESS_GROUP
+            # CREATE_NO_WINDOW (0x08000000) | CREATE_NEW_PROCESS_GROUP (0x00000200) | DETACHED_PROCESS (0x00000008)
+            creation_flags = 0x08000000 | 0x00000200 | 0x00000008
 
         subprocess.Popen(
             [target_bin, chat_script],
@@ -426,7 +407,8 @@ class LaunchChatGuiTool(object):
             stderr=subprocess.DEVNULL,
             startupinfo=si,
             creationflags=creation_flags,
+            close_fds=True if sys.platform != "win32" else False,
         )
 
-        arcpy.AddMessage(f"✅ Launched Antigravity AI Copilot Chat Dialog in silent mode using {os.path.basename(target_bin)}!")
+        arcpy.AddMessage(f"✅ Launched Antigravity AI Copilot Chat Dialog silently!")
         arcpy.AddMessage("=================================================")

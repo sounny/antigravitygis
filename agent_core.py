@@ -76,7 +76,26 @@ class GISAntigravityAgent:
         else:
             self.system_instructions = system_instructions
 
-        self.api_key = api_key or os.environ.get("ANTIGRAVITY_API_KEY") or os.environ.get("GEMINI_API_KEY")
+        # Auto-detect API key from process environment or Windows User Environment Registry
+        discovered_key = api_key or os.environ.get("ANTIGRAVITY_API_KEY") or os.environ.get("GEMINI_API_KEY")
+        if not discovered_key and sys.platform == "win32":
+            try:
+                import winreg
+                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_READ)
+                for var_name in ["GEMINI_API_KEY", "ANTIGRAVITY_API_KEY"]:
+                    try:
+                        val, _ = winreg.QueryValueEx(reg_key, var_name)
+                        if val and val.strip():
+                            discovered_key = val.strip()
+                            os.environ[var_name] = discovered_key
+                            break
+                    except Exception:
+                        pass
+                winreg.CloseKey(reg_key)
+            except Exception:
+                pass
+
+        self.api_key = discovered_key
         self.model = model or os.environ.get("ANTIGRAVITY_MODEL", "gemini-2.5-flash")
         self.conversation_history = []
 
@@ -593,35 +612,38 @@ def log_chat_to_geodatabase(
 
 def check_and_prompt_antigravity_login() -> Dict[str, Any]:
     """
-    Checks if active Antigravity credentials exist.
-    If missing, attempts to launch 1-click browser login or provides actionable instructions.
+    Checks if active Antigravity credentials exist silently with zero subprocesses or console popups.
     """
-    import subprocess
     user_home = os.path.expanduser("~")
     antigravity_dir = os.path.join(user_home, ".gemini", "antigravity")
     
-    if os.environ.get("ANTIGRAVITY_API_KEY") or os.path.exists(antigravity_dir):
+    if os.environ.get("ANTIGRAVITY_API_KEY") or os.environ.get("GEMINI_API_KEY"):
+        return {"status": "authenticated", "message": "Google Antigravity API key active."}
+
+    if os.path.exists(antigravity_dir):
         return {"status": "authenticated", "message": "Google Antigravity session active."}
 
-    # Attempt to invoke agy auth login silently without flashing console
-    try:
-        creation_flag = 0x08000000 if sys.platform == "win32" else 0
-        proc = subprocess.run(
-            ["agy", "auth", "login"],
-            capture_output=True,
-            text=True,
-            timeout=10,
-            creationflags=creation_flag,
-        )
-        if proc.returncode == 0:
-            return {"status": "authenticated", "message": "Successfully authenticated with Google Antigravity!"}
-    except Exception:
-        pass
+    if sys.platform == "win32":
+        try:
+            import winreg
+            reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_READ)
+            for var_name in ["GEMINI_API_KEY", "ANTIGRAVITY_API_KEY"]:
+                try:
+                    val, _ = winreg.QueryValueEx(reg_key, var_name)
+                    if val and val.strip():
+                        winreg.CloseKey(reg_key)
+                        os.environ[var_name] = val.strip()
+                        return {"status": "authenticated", "message": "Google Antigravity session active."}
+                except Exception:
+                    pass
+            winreg.CloseKey(reg_key)
+        except Exception:
+            pass
 
     return {
         "status": "unauthenticated",
         "message": (
             "No active Google Antigravity session found. "
-            "Please run 'agy auth login' in your terminal or log into the Antigravity Desktop App."
+            "Please configure your Google AI Studio API key via 'Set Google AI Studio API Key' tool or log into the Antigravity Desktop App."
         ),
     }
