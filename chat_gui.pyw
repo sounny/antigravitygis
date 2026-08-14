@@ -91,25 +91,48 @@ THEMES = {
 
 
 class AntigravityArcGISProChatApp:
-    def __init__(self, root: tk.Tk):
+    def __init__(
+        self,
+        root: tk.Tk,
+        initial_prompt: Optional[str] = None,
+        model: Optional[str] = None,
+        theme: Optional[str] = None,
+        workspace: Optional[str] = None,
+    ):
         self.root = root
         self.root.title(f"Antigravity AI Copilot (v{__version__}) — ArcGIS Pro")
         self.root.geometry("980x760")
         self.root.minsize(740, 560)
 
-        self.current_theme = "light"
+        self.current_theme = theme if theme in THEMES else "light"
         self.t = THEMES[self.current_theme]
         self.root.configure(bg=self.t["bg_main"])
 
-        self.selected_model = tk.StringVar(value="gemini-2.5-flash")
-        self.agent = GISAntigravityAgent(model=self.selected_model.get())
+        model_name = model or "gemini-2.5-flash"
+        self.selected_model = tk.StringVar(value=model_name)
+        self.agent = GISAntigravityAgent(model=model_name)
         self.is_processing = False
         self.stop_requested = False
-        self.active_gdb = ""
+        self.active_gdb = workspace or ""
         self.active_map_name = ""
 
         self._build_ui()
         self._refresh_arcgis_context()
+
+        # Update combobox to match initial model
+        for i, val in enumerate(self.model_combo["values"]):
+            if model_name in val:
+                self.model_combo.current(i)
+                break
+
+        # If an initial prompt was provided from the Geoprocessing pane, run it automatically
+        if initial_prompt and initial_prompt.strip():
+            self.root.after(300, lambda p=initial_prompt.strip(): self._auto_execute_prompt(p))
+
+    def _auto_execute_prompt(self, prompt: str):
+        self.input_text.delete("1.0", tk.END)
+        self.input_text.insert("1.0", prompt)
+        self._on_send()
 
     def _build_ui(self):
         t = self.t
@@ -764,8 +787,27 @@ class AntigravityArcGISProChatApp:
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="AntigravityGIS AI Copilot")
+    parser.add_argument("--prompt", type=str, default=None, help="Initial prompt to run")
+    parser.add_argument("--model", type=str, default="gemini-2.5-flash", help="AI Model Engine")
+    parser.add_argument("--theme", type=str, default="light", help="UI Theme (light/dark)")
+    parser.add_argument("--workspace", type=str, default=None, help="Target geodatabase workspace")
+    parser.add_argument("--key", type=str, default=None, help="API Key")
+    args, _ = parser.parse_known_args()
+
+    if args.key:
+        os.environ["GEMINI_API_KEY"] = args.key
+        os.environ["ANTIGRAVITY_API_KEY"] = args.key
+
     root = tk.Tk()
-    app = AntigravityArcGISProChatApp(root)
+    app = AntigravityArcGISProChatApp(
+        root,
+        initial_prompt=args.prompt,
+        model=args.model,
+        theme=args.theme,
+        workspace=args.workspace,
+    )
     root.mainloop()
 
 

@@ -171,14 +171,36 @@ class AntigravityAssistantTool(object):
 
         if auth_token:
             os.environ["ANTIGRAVITY_API_KEY"] = auth_token
-            arcpy.AddMessage("Account: Custom Antigravity API Key applied.")
+            os.environ["GEMINI_API_KEY"] = auth_token
+            arcpy.AddMessage("Account: Custom Google AI Studio API Key applied.")
         else:
-            arcpy.AddMessage("Account: Authenticating via active Google Antigravity account session...")
-            if check_and_prompt_antigravity_login:
+            # Auto-detect permanent key from Windows Registry if not passed in parameter
+            discovered_key = None
+            if sys.platform == "win32":
+                try:
+                    import winreg
+                    reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_READ)
+                    for var_name in ["GEMINI_API_KEY", "ANTIGRAVITY_API_KEY"]:
+                        try:
+                            val, _ = winreg.QueryValueEx(reg_key, var_name)
+                            if val and val.strip():
+                                discovered_key = val.strip()
+                                os.environ[var_name] = discovered_key
+                                break
+                        except Exception:
+                            pass
+                    winreg.CloseKey(reg_key)
+                except Exception:
+                    pass
 
-                auth_res = check_and_prompt_antigravity_login()
-                if auth_res.get("status") != "authenticated":
-                    arcpy.AddWarning(f"[AUTHENTICATION NOTICE] {auth_res.get('message')}")
+            if discovered_key:
+                arcpy.AddMessage("Account: Authenticated via permanent Google AI Studio API Key.")
+            else:
+                arcpy.AddMessage("Account: Authenticating via active Google Antigravity account session...")
+                if check_and_prompt_antigravity_login:
+                    auth_res = check_and_prompt_antigravity_login()
+                    if auth_res.get("status") != "authenticated":
+                        arcpy.AddWarning(f"[AUTHENTICATION NOTICE] {auth_res.get('message')}")
 
         if GISAntigravityAgent is None:
             details = f" ({import_error_msg})" if import_error_msg else ""
@@ -232,11 +254,11 @@ class AntigravityAssistantTool(object):
                 import concurrent.futures
                 with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
                     output_text = pool.submit(
-                        asyncio.run, agent_runner.execute_prompt(full_prompt, token_callback=log_token)
+                        asyncio.run, agent_runner.execute_prompt(full_prompt, token_callback=log_token, workspace=workspace_path)
                     ).result()
             else:
                 output_text = asyncio.run(
-                    agent_runner.execute_prompt(full_prompt, token_callback=log_token)
+                    agent_runner.execute_prompt(full_prompt, token_callback=log_token, workspace=workspace_path)
                 )
 
             # Flush any remaining buffer
@@ -269,10 +291,29 @@ class ConfigureApiKeyTool(object):
         param_key = arcpy.Parameter(
             displayName="Google AI Studio API Key (Get at https://aistudio.google.com/apikey)",
             name="api_key",
-            datatype="GPStringHidden",
+            datatype="GPString",
             parameterType="Required",
             direction="Input",
         )
+        # Prepopulate with existing key if set
+        existing = os.environ.get("GEMINI_API_KEY") or os.environ.get("ANTIGRAVITY_API_KEY")
+        if not existing and sys.platform == "win32":
+            try:
+                import winreg
+                reg_key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Environment", 0, winreg.KEY_READ)
+                for var_name in ["GEMINI_API_KEY", "ANTIGRAVITY_API_KEY"]:
+                    try:
+                        val, _ = winreg.QueryValueEx(reg_key, var_name)
+                        if val and val.strip():
+                            existing = val.strip()
+                            break
+                    except Exception:
+                        pass
+                winreg.CloseKey(reg_key)
+            except Exception:
+                pass
+        if existing:
+            param_key.value = existing
         return [param_key]
 
     def isLicensable(self):
@@ -285,7 +326,7 @@ class ConfigureApiKeyTool(object):
         return
 
     def execute(self, parameters, messages):
-        api_key = parameters[0].valueAsText.strip() if parameters[0].valueAsText else ""
+        api_key = parameters[0].valueAsText
         if not api_key:
             arcpy.AddError("Error: API Key cannot be empty.")
             return
@@ -320,42 +361,119 @@ class LaunchChatGuiTool(object):
         self.label = "Launch Antigravity AI Chat Dialog"
         self.category = "Sounny AI Tools"
         self.description = (
-            "👉 HOW TO LAUNCH: Click the 'Run' button at the bottom of this Geoprocessing pane to open the interactive AI Chat Copilot window!\n\n"
+            "Opens the interactive Antigravity AI Copilot Chat Dialog for ArcGIS Pro.\n\n"
             "Features:\n"
             "• Interactive conversational chat feed with speech bubbles\n"
-            "• Large multi-line prompt box with Shift+Enter support\n"
-            "• Quick spatial action chips (Pin Austin, Buffer layer, Inspect GDB)\n"
-            "• Direct map canvas drawing & automatic geodatabase history logging"
+            "• 1-Click '▶ Run in ArcPy' code block execution directly in your map view\n"
+            "• Dynamic Model Engine switching (Gemini 2.5 Flash / Gemini 2.5 Pro)\n"
+            "• Multi-turn memory, direct map drawing, and automatic geodatabase audit logging"
         )
         self.canRunInBackground = False
 
     def getParameterInfo(self):
-        """Define parameter with clear instruction."""
-        param_info = arcpy.Parameter(
-            displayName="Launch Instructions",
-            name="instructions",
+        """Define rich, interactive parameters for the Geoprocessing Tool dialog."""
+        # 0. Initial Prompt (Optional)
+        param_prompt = arcpy.Parameter(
+            displayName="Initial Prompt / Question (Optional)",
+            name="initial_prompt",
             datatype="GPString",
             parameterType="Optional",
             direction="Input",
         )
-        param_info.value = "👉 Click the 'Run' button below to open the AI Chat Copilot window!"
-        param_info.enabled = False
-        return [param_info]
+        param_prompt.value = ""
+
+        # 1. Model Engine Selector
+        param_model = arcpy.Parameter(
+            displayName="AI Model Engine",
+            name="model_engine",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input",
+        )
+        param_model.filter.type = "ValueList"
+        param_model.filter.list = [
+            "⚡ Gemini 2.5 Flash (Fast Spatial)",
+            "🧠 Gemini 2.5 Pro (Deep Spatial Reasoning)",
+            "🚀 Gemini 2.0 Flash",
+        ]
+        param_model.value = "⚡ Gemini 2.5 Flash (Fast Spatial)"
+
+        # 2. Interface Theme
+        param_theme = arcpy.Parameter(
+            displayName="Interface Theme",
+            name="ui_theme",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input",
+        )
+        param_theme.filter.type = "ValueList"
+        param_theme.filter.list = [
+            "ArcGIS Pro Light (Calcite Default)",
+            "ArcGIS Pro Dark (Titanium)",
+        ]
+        param_theme.value = "ArcGIS Pro Light (Calcite Default)"
+
+        # 3. Target Workspace
+        param_workspace = arcpy.Parameter(
+            displayName="Target Geodatabase / Workspace (Defaults to Active Project)",
+            name="workspace_path",
+            datatype="DEWorkspace",
+            parameterType="Optional",
+            direction="Input",
+        )
+        try:
+            aprx = arcpy.mp.ArcGISProject("CURRENT")
+            if aprx and aprx.defaultGeodatabase:
+                param_workspace.value = aprx.defaultGeodatabase
+        except Exception:
+            pass
+
+        # 4. Optional API Key Override
+        param_key = arcpy.Parameter(
+            displayName="Google AI Studio API Key (Optional — auto-loads permanent key)",
+            name="api_key",
+            datatype="GPString",
+            parameterType="Optional",
+            direction="Input",
+        )
+
+        return [param_prompt, param_model, param_theme, param_workspace, param_key]
 
     def isLicensable(self):
         return True
 
     def updateParameters(self, parameters):
-        if len(parameters) > 0 and not parameters[0].value:
-            parameters[0].value = "👉 Click the 'Run' button below to open the AI Chat Copilot window!"
+        """Auto-populate default workspace if available."""
+        if len(parameters) > 3 and not parameters[3].value:
+            try:
+                aprx = arcpy.mp.ArcGISProject("CURRENT")
+                if aprx and aprx.defaultGeodatabase:
+                    parameters[3].value = aprx.defaultGeodatabase
+            except Exception:
+                pass
         return
 
     def updateMessages(self, parameters):
         return
 
     def execute(self, parameters, messages):
+        initial_prompt = parameters[0].valueAsText if len(parameters) > 0 and parameters[0].valueAsText else ""
+        raw_model = parameters[1].valueAsText if len(parameters) > 1 and parameters[1].valueAsText else "flash"
+        raw_theme = parameters[2].valueAsText if len(parameters) > 2 and parameters[2].valueAsText else "light"
+        workspace_path = parameters[3].valueAsText if len(parameters) > 3 and parameters[3].valueAsText else ""
+        custom_key = parameters[4].valueAsText if len(parameters) > 4 and parameters[4].valueAsText else ""
+
+        model_code = "gemini-2.5-flash"
+        if "Pro" in raw_model:
+            model_code = "gemini-2.5-pro"
+        elif "2.0" in raw_model:
+            model_code = "gemini-2.0-flash"
+
+        theme_code = "dark" if "Dark" in raw_theme else "light"
+
         arcpy.AddMessage("=================================================")
         arcpy.AddMessage("  Launching Antigravity AI Copilot Chat Dialog")
+        arcpy.AddMessage(f"  Model: {model_code} | Theme: {theme_code}")
         arcpy.AddMessage("=================================================")
 
         import subprocess
@@ -389,6 +507,19 @@ class LaunchChatGuiTool(object):
         env = os.environ.copy()
         env["PYTHONPATH"] = f"{script_dir};{env.get('PYTHONPATH', '')}"
 
+        cmd_args = [
+            target_bin,
+            chat_script,
+            "--model", model_code,
+            "--theme", theme_code,
+        ]
+        if initial_prompt:
+            cmd_args.extend(["--prompt", initial_prompt])
+        if workspace_path:
+            cmd_args.extend(["--workspace", workspace_path])
+        if custom_key:
+            cmd_args.extend(["--key", custom_key])
+
         si = None
         creation_flags = 0
         if sys.platform == "win32":
@@ -399,7 +530,7 @@ class LaunchChatGuiTool(object):
             creation_flags = 0x08000000 | 0x00000200 | 0x00000008
 
         subprocess.Popen(
-            [target_bin, chat_script],
+            cmd_args,
             cwd=script_dir,
             env=env,
             stdin=subprocess.DEVNULL,
