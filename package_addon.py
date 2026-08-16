@@ -36,6 +36,7 @@ def main():
         'Uninstall-AntigravityGIS.ps1',
         'installer_gui.py',
         'chat_gui.py',
+        'chat_gui.pyw',
         'agent_core.py',
         'version.json',
         'arcgis' # Directory
@@ -48,6 +49,7 @@ def main():
         'Install-AntigravityGIS-QGIS.ps1',
         'Uninstall-AntigravityGIS-QGIS.ps1',
         'agent_core.py',
+        'version.json',
         'qgis'
     ]
     create_zip('releases/Install-AntigravityGIS-QGIS-Setup.zip', qgis_files)

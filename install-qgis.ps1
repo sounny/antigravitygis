@@ -25,6 +25,7 @@ if (-not (Test-Path $targetDir)) {
 $baseUrl = "https://raw.githubusercontent.com/sounny/antigravitygis/main"
 $files = @(
     @{ Url = "$baseUrl/agent_core.py"; Dest = (Join-Path $targetDir "agent_core.py") },
+    @{ Url = "$baseUrl/version.json"; Dest = (Join-Path $targetDir "version.json") },
     @{ Url = "$baseUrl/qgis/qgis_agent_core.py"; Dest = (Join-Path $targetDir "qgis_agent_core.py") },
     @{ Url = "$baseUrl/qgis/antigravitygis_plugin.py"; Dest = (Join-Path $targetDir "antigravitygis_plugin.py") },
     @{ Url = "$baseUrl/qgis/__init__.py"; Dest = (Join-Path $targetDir "__init__.py") },

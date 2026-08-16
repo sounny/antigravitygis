@@ -60,14 +60,27 @@ def run_installation(log_func, progress_func):
             base_dir = getattr(sys, '_MEIPASS', base_dir)
 
         core_file = os.path.join(base_dir, "agent_core.py")
+        chat_file = os.path.join(base_dir, "chat_gui.py")
+        chat_w_file = os.path.join(base_dir, "chat_gui.pyw")
+        version_file = os.path.join(base_dir, "version.json")
         pyt_file = os.path.join(base_dir, "arcgis", "AntigravityGIS.pyt")
         if not os.path.exists(pyt_file):
             pyt_file = os.path.join(base_dir, "AntigravityGIS.pyt")
 
-        if os.path.exists(core_file):
-            shutil.copy(core_file, os.path.join(user_toolbox_dir, "agent_core.py"))
-        if os.path.exists(pyt_file):
-            shutil.copy(pyt_file, os.path.join(user_toolbox_dir, "AntigravityGIS.pyt"))
+        files_to_deploy = [
+            (core_file, "agent_core.py"),
+            (chat_file, "chat_gui.py"),
+            (chat_w_file, "chat_gui.pyw"),
+            (version_file, "version.json"),
+            (pyt_file, "AntigravityGIS.pyt"),
+        ]
+
+        for src, dest_name in files_to_deploy:
+            if os.path.exists(src):
+                shutil.copy(src, os.path.join(user_toolbox_dir, dest_name))
+                log_func(f"  + Deployed {dest_name}")
+            else:
+                log_func(f"  - Warning: {dest_name} not found at {src}")
 
         log_func(f"[OK] Deployed toolbox to: {user_toolbox_dir}")
         progress_func(85)

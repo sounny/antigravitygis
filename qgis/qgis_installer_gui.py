@@ -62,13 +62,13 @@ def run_qgis_installation(log_func, progress_func):
         if not os.path.exists(core_file):
             core_file = os.path.join(base_dir, "agent_core.py")
 
-        qgis_core_file = os.path.join(base_dir, "qgis_agent_core.py")
-        init_file = os.path.join(base_dir, "__init__.py")
-        metadata_file = os.path.join(base_dir, "metadata.txt")
-        plugin_file = os.path.join(base_dir, "antigravitygis_plugin.py")
+        version_file = os.path.join(parent_dir, "version.json")
+        if not os.path.exists(version_file):
+            version_file = os.path.join(base_dir, "version.json")
 
         deploy_files = [
             (core_file, "agent_core.py"),
+            (version_file, "version.json"),
             (qgis_core_file, "qgis_agent_core.py"),
             (init_file, "__init__.py"),
             (metadata_file, "metadata.txt"),
