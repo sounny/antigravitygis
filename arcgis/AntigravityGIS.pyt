@@ -399,7 +399,10 @@ class LaunchChatGuiTool(object):
         param_model.filter.list = [
             "⚡ Gemini 2.5 Flash (Fast Spatial)",
             "🧠 Gemini 2.5 Pro (Deep Spatial Reasoning)",
-            "🚀 Gemini 2.0 Flash",
+            "🔮 Claude 3.7 Sonnet (Hybrid Reasoning)",
+            "🚀 Gemini 2.0 Flash (High Throughput)",
+            "💭 Gemini 2.0 Flash Thinking",
+            "🌟 Gemini 1.5 Pro",
         ]
         param_model.value = "⚡ Gemini 2.5 Flash (Fast Spatial)"
 
@@ -469,10 +472,16 @@ class LaunchChatGuiTool(object):
         custom_key = parameters[4].valueAsText if len(parameters) > 4 and parameters[4].valueAsText else ""
 
         model_code = "gemini-2.5-flash"
-        if "Pro" in raw_model:
+        if "3.7" in raw_model or "Claude" in raw_model:
+            model_code = "claude-3-7-sonnet"
+        elif "2.5 Pro" in raw_model or "Deep" in raw_model:
             model_code = "gemini-2.5-pro"
+        elif "Thinking" in raw_model:
+            model_code = "gemini-2.0-flash-thinking"
         elif "2.0" in raw_model:
             model_code = "gemini-2.0-flash"
+        elif "1.5" in raw_model:
+            model_code = "gemini-1.5-pro"
 
         theme_code = "dark" if "Dark" in raw_theme else "light"
 

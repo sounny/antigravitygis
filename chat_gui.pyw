@@ -188,7 +188,10 @@ class AntigravityArcGISProChatApp:
         models = [
             ("⚡ Gemini 2.5 Flash (Fast Spatial)", "gemini-2.5-flash"),
             ("🧠 Gemini 2.5 Pro (Deep Reasoning)", "gemini-2.5-pro"),
-            ("🚀 Gemini 2.0 Flash", "gemini-2.0-flash"),
+            ("🔮 Claude 3.7 Sonnet (Hybrid Reasoning)", "claude-3-7-sonnet"),
+            ("🚀 Gemini 2.0 Flash (High Throughput)", "gemini-2.0-flash"),
+            ("💭 Gemini 2.0 Flash Thinking", "gemini-2.0-flash-thinking"),
+            ("🌟 Gemini 1.5 Pro", "gemini-1.5-pro"),
         ]
 
         self.model_combo = ttk.Combobox(
@@ -479,10 +482,16 @@ class AntigravityArcGISProChatApp:
     def _on_model_changed(self, event=None):
         raw_val = self.model_combo.get()
         model_id = "gemini-2.5-flash"
-        if "Pro" in raw_val:
+        if "3.7" in raw_val or "Claude" in raw_val:
+            model_id = "claude-3-7-sonnet"
+        elif "2.5 Pro" in raw_val or "Deep" in raw_val:
             model_id = "gemini-2.5-pro"
+        elif "Thinking" in raw_val:
+            model_id = "gemini-2.0-flash-thinking"
         elif "2.0" in raw_val:
             model_id = "gemini-2.0-flash"
+        elif "1.5" in raw_val:
+            model_id = "gemini-1.5-pro"
         self.selected_model.set(model_id)
         self.agent = GISAntigravityAgent(model=model_id)
         self.status_dot.config(text=f"● Ready ({model_id})", fg=self.t["esri_green"])

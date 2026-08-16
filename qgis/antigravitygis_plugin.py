@@ -200,7 +200,10 @@ class AntigravityGISPlugin:
         self.model_combo.addItems([
             "⚡ Gemini 2.5 Flash",
             "🧠 Gemini 2.5 Pro",
-            "🚀 Gemini 2.0 Flash"
+            "🔮 Claude 3.7 Sonnet",
+            "🚀 Gemini 2.0 Flash",
+            "💭 Gemini 2.0 Flash Thinking",
+            "🌟 Gemini 1.5 Pro"
         ])
         self.model_combo.setStyleSheet(
             "padding: 3px 8px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px;"
@@ -297,10 +300,18 @@ class AntigravityGISPlugin:
         self.dock_widget.setWidget(container)
 
     def _on_model_changed(self, index):
-        models = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
-        self.current_model = models[index]
-        if self.agent:
-            self.agent.model = self.current_model
+        models = [
+            "gemini-2.5-flash",
+            "gemini-2.5-pro",
+            "claude-3-7-sonnet",
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-thinking",
+            "gemini-1.5-pro"
+        ]
+        if index < len(models):
+            self.current_model = models[index]
+            if self.agent:
+                self.agent.model = self.current_model
 
     def _configure_api_key(self):
         current_key = os.environ.get("GEMINI_API_KEY", "")
